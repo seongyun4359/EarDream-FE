@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
-import Input from "../components/common/Input";
 
 const WriteNewsPage: React.FC = () => {
   const navigate = useNavigate();
