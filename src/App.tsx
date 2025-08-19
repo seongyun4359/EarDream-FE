@@ -9,13 +9,15 @@ import HomePage from "./pages/HomePage";
 import WriteNewsPage from "./pages/WriteNewsPage";
 import NewsBoxPage from "./pages/NewsBoxPage";
 import MyPage from "./pages/MyPage";
+import SplashPage from "./pages/SplashPage";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<SplashPage />} />
+          <Route path="/splash" element={<SplashPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/write-news" element={<WriteNewsPage />} />
