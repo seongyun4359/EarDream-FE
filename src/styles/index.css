@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Gugi:wght@400&display=swap");
 @import "tailwindcss";
 
 /* 커스텀 색상 변수 */
@@ -15,6 +16,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Gumi 폰트 클래스 */
+.font-gumi {
+  font-family: "Gugi", cursive;
 }
 
 /* iOS 스타일 배경 */
