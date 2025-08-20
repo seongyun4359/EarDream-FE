@@ -12,8 +12,7 @@ const FamilySubscribePage: React.FC = () => {
   const familyName = state.familyName || "우리 가족";
 
   const handlePay = async () => {
-    // TODO: 결제 연동 (PG사 선택 후 구현)
-    navigate("/home");
+    navigate("/payment", { state: { familyName } });
   };
 
   return (
