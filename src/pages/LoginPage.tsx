@@ -9,6 +9,7 @@ import {
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   useEffect(() => {
     // 카카오 SDK 초기화
@@ -19,24 +20,31 @@ const LoginPage: React.FC = () => {
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get("code");
 
-      if (code) {
+      if (code && !isProcessing) {
+        setIsProcessing(true);
         console.log("인가 코드 발견:", code);
         try {
           const user = await handleKakaoRedirect();
           if (user) {
             console.log("모바일 로그인 성공:", user);
+            // URL에서 인가 코드 제거 후 튜토리얼로 이동
+            window.history.replaceState({}, document.title, "/login");
             navigate("/tutorial");
           } else {
             // 임시 해결책: 인가 코드가 있으면 로그인 성공으로 간주
             console.log(
               "인가 코드 확인됨 - 로그인 성공으로 간주하고 튜토리얼로 이동"
             );
+            // URL에서 인가 코드 제거 후 튜토리얼로 이동
+            window.history.replaceState({}, document.title, "/login");
             navigate("/tutorial");
           }
         } catch (error) {
           console.error("모바일 로그인 오류:", error);
           // 오류가 발생해도 인가 코드가 있으면 성공으로 간주
           console.log("오류 발생했지만 인가 코드가 있으므로 튜토리얼로 이동");
+          // URL에서 인가 코드 제거 후 튜토리얼로 이동
+          window.history.replaceState({}, document.title, "/login");
           navigate("/tutorial");
         }
       }
