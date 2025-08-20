@@ -4,14 +4,23 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { useEffect } from "react";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import WriteNewsPage from "./pages/WriteNewsPage";
 import NewsBoxPage from "./pages/NewsBoxPage";
 import MyPage from "./pages/MyPage";
 import SplashPage from "./pages/SplashPage";
+import TutorialPage from "./pages/TutorialPage";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import { initKakao } from "./services/kakaoAuth";
 
 function App() {
+  useEffect(() => {
+    // 앱 시작 시 카카오 SDK 초기화
+    initKakao();
+  }, []);
+
   return (
     <Router>
       <div className="App">
@@ -19,10 +28,39 @@ function App() {
           <Route path="/" element={<SplashPage />} />
           <Route path="/splash" element={<SplashPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/write-news" element={<WriteNewsPage />} />
-          <Route path="/news-box" element={<NewsBoxPage />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/tutorial" element={<TutorialPage />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/write-news"
+            element={
+              <ProtectedRoute>
+                <WriteNewsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/news-box"
+            element={
+              <ProtectedRoute>
+                <NewsBoxPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mypage"
+            element={
+              <ProtectedRoute>
+                <MyPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* TODO: 추가 페이지들 구현 후 주석 해제 */}
           {/* <Route path="/signup" element={<SignupPage />} /> */}
