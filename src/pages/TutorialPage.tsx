@@ -76,8 +76,8 @@ const TutorialPage: React.FC = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
-      // 튜토리얼 완료 시 홈페이지로 이동
-      navigate("/home");
+      // 튜토리얼 완료 시 가족 설정 페이지로 이동
+      navigate("/family-setup");
     }
   };
 
