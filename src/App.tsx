@@ -12,6 +12,9 @@ import NewsBoxPage from "./pages/NewsBoxPage";
 import MyPage from "./pages/MyPage";
 import SplashPage from "./pages/SplashPage";
 import TutorialPage from "./pages/TutorialPage";
+import FamilySetupPage from "./pages/FamilySetupPage";
+import FamilyCreatePage from "./pages/FamilyCreatePage";
+import FamilyJoinPage from "./pages/FamilyJoinPage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { initKakao } from "./services/kakaoAuth";
 
@@ -29,6 +32,9 @@ function App() {
           <Route path="/splash" element={<SplashPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/tutorial" element={<TutorialPage />} />
+          <Route path="/family-setup" element={<FamilySetupPage />} />
+          <Route path="/family/create" element={<FamilyCreatePage />} />
+          <Route path="/family/join" element={<FamilyJoinPage />} />
           <Route
             path="/home"
             element={
