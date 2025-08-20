@@ -17,8 +17,8 @@ const PaymentPage: React.FC = () => {
 
   const handlePay = () => {
     if (!agreePolicy) return;
-    // TODO: 실제 결제 연동
-    navigate("/home");
+    // 결제 버튼 클릭 시 기본정보 입력 플로우로 이동
+    navigate("/recipient", { state: { familyName } });
   };
 
   return (

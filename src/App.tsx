@@ -17,6 +17,8 @@ import FamilyCreatePage from "./pages/FamilyCreatePage";
 import FamilyJoinPage from "./pages/FamilyJoinPage";
 import FamilySubscribePage from "./pages/FamilySubscribePage";
 import PaymentPage from "./pages/PaymentPage";
+import RecipientInfoPage from "./pages/RecipientInfoPage";
+import GettingStartedPage from "./pages/GettingStartedPage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { initKakao } from "./services/kakaoAuth";
 
@@ -39,6 +41,8 @@ function App() {
           <Route path="/family/join" element={<FamilyJoinPage />} />
           <Route path="/family/subscribe" element={<FamilySubscribePage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/recipient" element={<RecipientInfoPage />} />
+          <Route path="/getting-started" element={<GettingStartedPage />} />
           <Route
             path="/home"
             element={
