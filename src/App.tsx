@@ -26,6 +26,9 @@ import RecipientInfoPage from "./pages/RecipientInfoPage";
 import GettingStartedPage from "./pages/GettingStartedPage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { initKakao } from "./services/kakaoAuth";
+import SubscribePage from "./pages/SubscribePage";
+import AutoPaymentPage from "./pages/AutoPaymentPage";
+import NewsDetailPage from "./pages/NewsDetailPage";
 
 function App() {
   useEffect(() => {
@@ -48,7 +51,7 @@ function App() {
           <Route path="/mypage/edit" element={<MyInfoEditPage />} />
           <Route path="/member" element={<FamilyMembersPage />} />
           <Route path="/member/edit" element={<MemberEditPage />} />
-          <Route path="/member/waitList" element={<WaitListPage />} />
+          <Route path="/member/wait-list" element={<WaitListPage />} />
           <Route path="/member/invite" element={<FamilyInvitePage />} />
           <Route path="/tutorial" element={<TutorialPage />} />
           <Route path="/family-setup" element={<FamilySetupPage />} />
@@ -58,6 +61,10 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/recipient" element={<RecipientInfoPage />} />
           <Route path="/getting-started" element={<GettingStartedPage />} />
+          <Route path="/mypage/subscribe" element={<SubscribePage />} />
+          <Route path="/mypage/auto-payment" element={<AutoPaymentPage />} />
+          <Route path="/home/news/detail" element={<NewsDetailPage />} />
+
           <Route
             path="/home"
             element={
