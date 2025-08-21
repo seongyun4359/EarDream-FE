@@ -5,16 +5,11 @@ import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
-import DeleteAlert from "../components/DeleteAlert";
+import Alert from "../components/common/Alert";
+
+import WarningIcon from "../assets/icons/WarningIcon";
 
 const MemberEditPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [showAlert, setShowAlert] = useState(false);
-
-  const handleDelete = () => {
-    setShowAlert(true);
-  };
-
   const user = {
     name: "김가족",
     email: "family@example.com",
@@ -24,7 +19,13 @@ const MemberEditPage: React.FC = () => {
     nextPaymentDate: "2024년 2월 4일",
     subscriptionStartDate: "2023년 1월 1일",
     price: "8,900원",
+    isRecipient: true,
   };
+
+  const navigate = useNavigate();
+  const [isDeleteAlert, setIsDeleteAlert] = useState(false);
+  const [isRecipientAlert, setIsRecipientAlert] = useState(false);
+  const [isRecipient, setIsRecipient] = useState(user.isRecipient);
 
   /* TODO: 사용자 정보 타입 수정 필요 */
   const [userInfo, setUserInfo] = useState<string>("");
@@ -32,6 +33,14 @@ const MemberEditPage: React.FC = () => {
   /* TODO: 사용자 정보 수정 후 저장하는 함수 수정 필요 */
   const handleSave = () => {
     navigate("/home");
+  };
+
+  /* TODO: 사용자 삭제하는 로직 함수 추가 필요*/
+  const handleDeleteMember = () => {
+    if (isRecipient) {
+      setIsRecipientAlert(true);
+      setIsDeleteAlert(false);
+    }
   };
 
   return (
@@ -80,13 +89,23 @@ const MemberEditPage: React.FC = () => {
           </select>
         </div>
 
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={isRecipient}
+            onChange={(e) => setIsRecipient(e.target.checked)}
+            className="w-5 h-5 accent-[#018941]"
+          />
+          <p>책자 수령인으로 지정할래요</p>
+        </div>
+
         {/* 버튼 영역 */}
         <div className="flex gap-4 mt-10">
           <Button
             type="button"
             variant="primary"
             size="medium"
-            onClick={() => navigate(-1)}
+            onClick={() => handleSave}
             className="flex-1"
           >
             저장하기
@@ -96,17 +115,36 @@ const MemberEditPage: React.FC = () => {
             type="button"
             variant="dangerOutline"
             size="medium"
-            onClick={handleDelete}
+            onClick={() => setIsDeleteAlert(true)}
             className="flex-1"
           >
             목록에서 제외하기
           </Button>
         </div>
 
-        {showAlert && (
-          <DeleteAlert
-            message="정말 가족 목록에서 제외 하실 건가요?"
-            onCancel={() => setShowAlert(false)}
+        {isDeleteAlert && (
+          <Alert
+            icon={<WarningIcon className="w-10 h-10 text-red-600" />}
+            message="정말 가족 목록에서 제외 하시겠어요?"
+            confirmText="제외하기"
+            confirmVariant="danger"
+            onConfirm={handleDeleteMember}
+            confirmClassName="flex-1 ml-4"
+            cancelText="취소"
+            cancelVariant="secondaryOutline"
+            cancelClassName="flex-1"
+            onCancel={() => setIsDeleteAlert(false)}
+          />
+        )}
+
+        {isRecipientAlert && (
+          <Alert
+            icon={<WarningIcon className="w-10 h-10 text-red-600" />}
+            message="책자 수령인 상태에서는 제외할 수 없어요"
+            confirmText="확인"
+            confirmVariant="secondaryOutline"
+            onConfirm={() => setIsRecipientAlert(false)}
+            confirmClassName="flex-1 ml-4"
           />
         )}
       </div>
