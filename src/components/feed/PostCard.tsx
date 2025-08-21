@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import type { Post } from "../../types/feed";
 import CommentInput from "./CommentInput";
 
@@ -8,13 +9,22 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
+  const navigate = useNavigate();
   const handleCommentSend = (message: string) => {
     if (onCommentSend) {
       onCommentSend(post.id, message);
     }
   };
+
+  const handleCardClick = () => {
+    navigate("/home/news/detail");
+  };
+
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm">
+    <div
+      className="bg-white rounded-lg p-4 shadow-sm"
+      onClick={handleCardClick}
+    >
       {/* 게시물 헤더 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
@@ -71,10 +81,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
       </div>
 
       {/* 댓글 입력 */}
-      <CommentInput
-        profileImage="/api/placeholder/40/40"
-        onSend={handleCommentSend}
-      />
+      <CommentInput onSend={handleCommentSend} />
     </div>
   );
 };
