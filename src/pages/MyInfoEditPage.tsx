@@ -5,9 +5,11 @@ import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
 import Input from "../components/common/Input";
+import ImageUploadButton from "../components/common/ImageUploadButton";
 
 const MyInfoEditPage: React.FC = () => {
   const navigate = useNavigate();
+  const [profileImage, setProfileImage] = useState<string>("");
 
   const user = {
     name: "김가족",
@@ -25,22 +27,30 @@ const MyInfoEditPage: React.FC = () => {
 
   /* TODO: 사용자 정보 수정 후 저장하는 함수 수정 필요 */
   const handleSave = () => {
-    navigate("/home");
+    navigate("/mypage");
+  };
+
+  const handleImageChange = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setProfileImage(event.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
     <MainLayout>
       <Header title="내 정보 관리" />
 
-      {/* 사용자 이미지 */}
-      <div className="p-4 space-y-6 bg-white">
-        <div className="flex items-center justify-center space-x-4 mb-4 p-4">
-          <img
-            src={user.profileImage}
-            alt={user.name}
-            className="w-24 h-24 rounded-full bg-gray-200"
-          />
-        </div>
+      <div className="flex justify-center mt-8">
+        <ImageUploadButton
+          image={profileImage}
+          onChange={handleImageChange}
+          size={100}
+          isShowPreview={true}
+        />
       </div>
 
       {/* 이름 수정 */}
