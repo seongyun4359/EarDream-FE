@@ -5,6 +5,7 @@ interface ButtonProps {
   variant?:
     | "primary"
     | "secondary"
+    | "secondaryOutline"
     | "outline"
     | "danger"
     | "dangerOutline"
@@ -33,6 +34,8 @@ const Button: React.FC<ButtonProps> = ({
       "bg-[#018941] hover:bg-[#017a3a] text-white focus:ring-[#016b33] shadow-sm hover:shadow-md",
     secondary:
       "bg-gray-100 hover:bg-gray-200 text-gray-900 focus:ring-gray-300 shadow-sm hover:shadow-md",
+    secondaryOutline:
+      "bg-white text-gray-600 border-2 border-gray-400 hover:bg-gray-200 focus:ring-gray-400 shadow-sm hover:shadow-md",
     outline:
       "border-2 border-[#018941] text-[#018941] hover:bg-[#018941]/5 focus:ring-[#016b33] shadow-sm hover:shadow-md",
     danger:
