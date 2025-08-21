@@ -5,6 +5,7 @@ import FeedHeader from "../components/feed/FeedHeader";
 import FeedTabs from "../components/feed/FeedTabs";
 import FeedFilters from "../components/feed/FeedFilters";
 import PostCard from "../components/feed/PostCard";
+import Button from "../components/common/Button";
 import type { Post } from "../types/feed";
 
 const HomePage: React.FC = () => {
@@ -57,10 +58,9 @@ const HomePage: React.FC = () => {
         onWriteNews={handleWriteNews}
       />
 
-      {/* 메인 콘텐츠 */}
-      <div className="flex-1 bg-white">
+      <div className="flex-1 bg-white relative">
         {/* 게시물 목록 */}
-        <div className="space-y-4 px-4 pb-24">
+        <div className="space-y-4 px-4 pb-20">
           {posts.map((post) => (
             <PostCard
               key={post.id}
@@ -68,6 +68,17 @@ const HomePage: React.FC = () => {
               onCommentSend={handleCommentSend}
             />
           ))}
+        </div>
+
+        {/* 플로팅 글쓰기 버튼 */}
+        <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 w-full max-w-md px-2 z-50">
+          <Button
+            variant="primary"
+            className="w-24 h-10 rounded-full shadow-lg flex items-center justify-center text-me"
+            onClick={handleWriteNews}
+          >
+            + 글쓰기
+          </Button>
         </div>
       </div>
     </MainLayout>
