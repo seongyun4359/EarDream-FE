@@ -11,6 +11,11 @@ import WriteNewsPage from "./pages/WriteNewsPage";
 import NewsBoxPage from "./pages/NewsBoxPage";
 import MyPage from "./pages/MyPage";
 import SplashPage from "./pages/SplashPage";
+import MyInfoEditPage from "./pages/MyInfoEditPage";
+import FamilyMembersPage from "./pages/FamilyMembersPage";
+import MemberEditPage from "./pages/MemberEditPage";
+import WaitListPage from "./pages/WaitListPage";
+import FamilyInvitePage from "./pages/FamilyInvitePage";
 import TutorialPage from "./pages/TutorialPage";
 import FamilySetupPage from "./pages/FamilySetupPage";
 import FamilyCreatePage from "./pages/FamilyCreatePage";
@@ -32,9 +37,19 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* page 경로 수정 필요 */}
           <Route path="/" element={<SplashPage />} />
           <Route path="/splash" element={<SplashPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/write-news" element={<WriteNewsPage />} />
+          <Route path="/news-box" element={<NewsBoxPage />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/edit" element={<MyInfoEditPage />} />
+          <Route path="/member" element={<FamilyMembersPage />} />
+          <Route path="/member/edit" element={<MemberEditPage />} />
+          <Route path="/member/waitList" element={<WaitListPage />} />
+          <Route path="/member/invite" element={<FamilyInvitePage />} />
           <Route path="/tutorial" element={<TutorialPage />} />
           <Route path="/family-setup" element={<FamilySetupPage />} />
           <Route path="/family/create" element={<FamilyCreatePage />} />
@@ -80,7 +95,6 @@ function App() {
           {/* <Route path="/signup" element={<SignupPage />} /> */}
           {/* <Route path="/invite/:inviteCode" element={<InvitePage />} /> */}
           {/* <Route path="/family/:familyId" element={<FamilyPage />} /> */}
-
           {/* 404 페이지 */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

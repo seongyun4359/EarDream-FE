@@ -23,9 +23,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
             alt={post.author}
             className="w-10 h-10 rounded-full bg-gray-200"
           />
-          <div>
+          <div className="flex items-center">
             <p className="font-medium text-gray-900">{post.author}</p>
-            <p className="text-sm text-gray-500">{post.timeAgo}</p>
+            <p className="text-sm text-gray-500 ml-3">{post.timeAgo}</p>
           </div>
         </div>
         {post.isNew && (

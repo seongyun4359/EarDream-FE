@@ -12,9 +12,11 @@ const MyPage: React.FC = () => {
     name: "김가족",
     email: "family@example.com",
     profileImage: "/api/placeholder/80/80",
+    subscriptionPlan: "월 구독",
     subscriptionStatus: "정상 구독 중",
     nextPaymentDate: "2024년 2월 4일",
     subscriptionStartDate: "2023년 1월 1일",
+    price: "8,900원",
   };
 
   const handleEditProfile = () => {
@@ -22,7 +24,7 @@ const MyPage: React.FC = () => {
   };
 
   const handleViewFamily = () => {
-    navigate("/home");
+    navigate("/member");
   };
 
   const handlePaymentHistory = () => {
@@ -81,24 +83,23 @@ const MyPage: React.FC = () => {
 
         {/* 구독 정보 */}
         <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            구독 현황
-          </h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">구독 상태</span>
-              <span className="text-[#018941] font-medium">
-                {user.subscriptionStatus}
-              </span>
+              <span className="text-gray-600">플랜명</span>
+              <span className="text-gray-900">{user.subscriptionPlan}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">다음 결제일</span>
               <span className="text-gray-900">{user.nextPaymentDate}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">구독 시작일</span>
-              <span className="text-gray-900">
-                {user.subscriptionStartDate}
+              <span className="text-gray-600">금액</span>
+              <span className="text-gray-900">{user.price}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">상태</span>
+              <span className="text-[#018941] font-medium">
+                {user.subscriptionStatus}
               </span>
             </div>
           </div>
@@ -113,7 +114,7 @@ const MyPage: React.FC = () => {
             >
               <div className="flex items-center space-x-3">
                 <svg
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-[#018941]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -125,7 +126,7 @@ const MyPage: React.FC = () => {
                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span>나의 가족</span>
+                <span>가족 관리</span>
               </div>
               <svg
                 className="w-5 h-5 text-gray-400"
@@ -142,7 +143,7 @@ const MyPage: React.FC = () => {
               </svg>
             </button>
 
-            <button
+            {/* <button
               onClick={handlePaymentHistory}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between"
             >
@@ -175,7 +176,7 @@ const MyPage: React.FC = () => {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </button>
+            </button> */}
 
             <button
               onClick={handleAutoPayment}
@@ -183,7 +184,7 @@ const MyPage: React.FC = () => {
             >
               <div className="flex items-center space-x-3">
                 <svg
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-[#018941]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -195,7 +196,7 @@ const MyPage: React.FC = () => {
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
                 </svg>
-                <span>자동 결제 관리</span>
+                <span>구독 내역 및 배송</span>
               </div>
               <svg
                 className="w-5 h-5 text-gray-400"
@@ -218,7 +219,7 @@ const MyPage: React.FC = () => {
             >
               <div className="flex items-center space-x-3">
                 <svg
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-[#018941]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -230,7 +231,7 @@ const MyPage: React.FC = () => {
                     d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
                   />
                 </svg>
-                <span>결제 수단 관리</span>
+                <span>자동 결제 관리</span>
               </div>
               <svg
                 className="w-5 h-5 text-gray-400"

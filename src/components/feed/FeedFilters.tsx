@@ -12,8 +12,8 @@ const FeedFilters: React.FC<FeedFiltersProps> = ({
   onWriteNews,
 }) => {
   return (
-    <div className="bg-white px-4 py-3">
-      <div className="flex justify-center space-x-8">
+    <div className="bg-white rounded-lg p-4 m-4 shadow-sm">
+      <div className="flex space-x-8">
         <button
           onClick={() => onFilterChange("전체")}
           className={`flex flex-col items-center space-y-1 ${

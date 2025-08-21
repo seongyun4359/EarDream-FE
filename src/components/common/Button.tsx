@@ -2,7 +2,13 @@ import React from "react";
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "outline" | "danger";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "danger"
+    | "dangerOutline"
+    | "text";
   size?: "small" | "medium" | "large";
   onClick?: () => void;
   disabled?: boolean;
@@ -31,6 +37,9 @@ const Button: React.FC<ButtonProps> = ({
       "border-2 border-[#018941] text-[#018941] hover:bg-[#018941]/5 focus:ring-[#016b33] shadow-sm hover:shadow-md",
     danger:
       "bg-red-500 hover:bg-red-600 text-white focus:ring-red-400 shadow-sm hover:shadow-md",
+    dangerOutline:
+      "bg-white text-red-500 border-2 border-red-500 hover:bg-red-50 focus:ring-red-400 shadow-sm hover:shadow-md",
+    text: "bg-transparent text-gray-500 hover:text-gray-700 focus:ring-gray-500 shadow-none px-0 py-0",
   };
 
   const sizeClasses = {

@@ -49,7 +49,7 @@ const HomePage: React.FC = () => {
 
   return (
     <MainLayout>
-      <FeedHeader groupName="그룹 이름" />
+      <FeedHeader groupName="가족 이름" />
       <FeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
       <FeedFilters
         activeFilter={activeFilter}
@@ -58,7 +58,7 @@ const HomePage: React.FC = () => {
       />
 
       {/* 메인 콘텐츠 */}
-      <div className="flex-1 bg-gray-50">
+      <div className="flex-1 bg-white">
         {/* 게시물 목록 */}
         <div className="space-y-4 px-4 pb-24">
           {posts.map((post) => (
