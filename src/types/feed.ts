@@ -10,3 +10,10 @@ export interface Post {
   comments: number;
   isNew: boolean;
 }
+
+export interface CommentType {
+  author: string;
+  authorImage: string;
+  content: string;
+  createdAt: string;
+}
