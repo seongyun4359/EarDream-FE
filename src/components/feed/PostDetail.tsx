@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Post } from "../../types/feed";
 import CommentInput from "./CommentInput";
 import Comment from "./Comment";
 import type { CommentType } from "../../types/feed";
+import Button from "../common/Button";
+import Alert from "../common/Alert";
+import WarningIcon from "../../assets/icons/WarningIcon";
 
 const comments: CommentType[] = [
   {
@@ -27,19 +30,44 @@ const comments: CommentType[] = [
 
 interface PostCardProps {
   post: Post;
+  isManager?: boolean;
   onCommentSend?: (postId: string, message: string) => void;
 }
 
-const PostDetail: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
+const PostDetail: React.FC<PostCardProps> = ({
+  post,
+  isManager = false,
+  onCommentSend,
+}) => {
+  const [isShowDeleteAlert, setIsShowDeleteAlert] = useState<boolean>(false);
+
   const handleCommentSend = (message: string) => {
     if (onCommentSend) {
       onCommentSend(post.id, message);
     }
   };
+
+  /* TODO: 게시글 삭제 함수 추가*/
+  const handlePostDelete = () => {
+    setIsShowDeleteAlert(true);
+  };
+
   return (
     <div className="bg-white p-4 relative">
-      {/* 게시물 제목 */}
-      <h3 className="font-medium text-gray-900 mb-3">{post.title}</h3>
+      <div className="flex items-center justify-between mb-3">
+        {/* 게시물 제목 */}
+        <p className="text-lg font-medium text-gray-900 mb-3">{post.title}</p>
+
+        {isManager && (
+          <Button
+            variant="dangerOutline"
+            size="small"
+            onClick={handlePostDelete}
+          >
+            삭제
+          </Button>
+        )}
+      </div>
 
       {/* 게시물 헤더 */}
       <div className="flex items-center justify-between mb-3">
@@ -106,6 +134,21 @@ const PostDetail: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
       <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50">
         <CommentInput onSend={handleCommentSend} />
       </div>
+
+      {isShowDeleteAlert && (
+        <Alert
+          icon={<WarningIcon className="w-10 h-10 text-red-600" />}
+          message="정말 삭제하시겠어요?"
+          confirmText="삭제하기"
+          confirmVariant="danger"
+          onConfirm={handlePostDelete}
+          confirmClassName="flex-1 ml-4"
+          cancelText="취소"
+          cancelVariant="secondaryOutline"
+          cancelClassName="flex-1"
+          onCancel={() => setIsShowDeleteAlert(false)}
+        />
+      )}
     </div>
   );
 };
