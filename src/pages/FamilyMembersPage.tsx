@@ -30,7 +30,7 @@ const FamilyMembersPage: React.FC = () => {
 
   /* 가족 대기리스트 */
   const handleWaitList = () => {
-    navigate("/member/waitList");
+    navigate("/member/wait-list");
   };
 
   return (

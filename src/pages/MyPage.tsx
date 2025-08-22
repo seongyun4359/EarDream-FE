@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
+import Alert from "../components/common/Alert";
+import LogoutIcon from "../assets/icons/LogoutIcon";
+import WarningIcon from "../assets/icons/WarningIcon";
 
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
+  const [isShowLogoutAlert, setIsShowLogoutAlert] = useState(false);
+  const [isShowDeleteAccountAlert, setIsShowDeleteAccountAlert] =
+    useState(false);
 
   // TODO: 실제 사용자 데이터로 교체
   const user = {
@@ -27,19 +33,16 @@ const MyPage: React.FC = () => {
     navigate("/member");
   };
 
-  const handlePaymentHistory = () => {
-    // TODO: 결제 내역 페이지로 이동
-    console.log("결제 내역 보기");
-  };
-
   const handleAutoPayment = () => {
     // TODO: 자동 결제 관리 페이지로 이동
     console.log("자동 결제 관리");
+    navigate("/mypage/auto-payment");
   };
 
-  const handlePaymentMethod = () => {
+  const handleSubscribe = () => {
     // TODO: 결제 수단 관리 페이지로 이동
     console.log("결제 수단 관리");
+    navigate("/mypage/subscribe");
   };
 
   const handleLogout = () => {
@@ -49,11 +52,9 @@ const MyPage: React.FC = () => {
   };
 
   const handleWithdraw = () => {
-    // TODO: 회원탈퇴 확인 모달
-    if (confirm("정말로 탈퇴하시겠습니까? 모든 데이터가 삭제됩니다.")) {
-      console.log("회원탈퇴");
-      navigate("/login");
-    }
+    // TODO: 회원탈퇴 확인 알럿으로 변경해놓음. 로직 추가 필요
+    console.log("회원탈퇴");
+    navigate("/login");
   };
 
   return (
@@ -143,43 +144,8 @@ const MyPage: React.FC = () => {
               </svg>
             </button>
 
-            {/* <button
-              onClick={handlePaymentHistory}
-              className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between"
-            >
-              <div className="flex items-center space-x-3">
-                <svg
-                  className="w-5 h-5 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-                <span>결제 내역</span>
-              </div>
-              <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button> */}
-
             <button
-              onClick={handleAutoPayment}
+              onClick={handleSubscribe}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between"
             >
               <div className="flex items-center space-x-3">
@@ -214,7 +180,7 @@ const MyPage: React.FC = () => {
             </button>
 
             <button
-              onClick={handlePaymentMethod}
+              onClick={handleAutoPayment}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between"
             >
               <div className="flex items-center space-x-3">
@@ -254,29 +220,17 @@ const MyPage: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm">
           <div className="divide-y divide-gray-200">
             <button
-              onClick={handleLogout}
+              onClick={() => setIsShowLogoutAlert(true)}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between text-red-600"
             >
               <div className="flex items-center space-x-3">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
+                <LogoutIcon className="w-5 h-5" />
                 <span>로그아웃</span>
               </div>
             </button>
 
             <button
-              onClick={handleWithdraw}
+              onClick={() => setIsShowDeleteAccountAlert(true)}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 flex items-center justify-between text-red-600"
             >
               <div className="flex items-center space-x-3">
@@ -298,6 +252,38 @@ const MyPage: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {isShowLogoutAlert && (
+          <Alert
+            icon={<LogoutIcon className="w-10 h-10 text-red-600" />}
+            message="로그아웃 하시겠어요?"
+            alertHelperText="로그아웃 하면 다시 로그인해야 합니다"
+            confirmText="로그아웃"
+            confirmVariant="danger"
+            onConfirm={handleLogout}
+            confirmClassName="flex-1 ml-4"
+            cancelText="취소"
+            cancelVariant="secondaryOutline"
+            cancelClassName="flex-1"
+            onCancel={() => setIsShowLogoutAlert(false)}
+          />
+        )}
+
+        {isShowDeleteAccountAlert && (
+          <Alert
+            icon={<WarningIcon className="w-10 h-10 text-red-600" />}
+            message="정말 탈퇴하시겠어요?"
+            alertHelperText="계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다."
+            confirmText="회원탈퇴"
+            confirmVariant="danger"
+            onConfirm={handleWithdraw}
+            confirmClassName="flex-1 ml-4"
+            cancelText="취소"
+            cancelVariant="secondaryOutline"
+            cancelClassName="flex-1"
+            onCancel={() => setIsShowDeleteAccountAlert(false)}
+          />
+        )}
       </div>
     </MainLayout>
   );
