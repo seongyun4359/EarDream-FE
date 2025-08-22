@@ -12,9 +12,6 @@ const FamilyInvitePage: React.FC = () => {
     navigate("/member/edit");
   };
 
-  /* 가족 구성원 초대 */
-  const handleInviteFamily = () => {};
-
   return (
     <MainLayout>
       <Header title="가족 관리" />

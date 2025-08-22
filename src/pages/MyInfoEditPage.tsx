@@ -22,10 +22,6 @@ const MyInfoEditPage: React.FC = () => {
     price: "8,900원",
   };
 
-  /* TODO: 사용자 정보 변경 함수 수정 필요 */
-  const [userInfo, setUserInfo] = useState<string>("");
-
-  /* TODO: 사용자 정보 수정 후 저장하는 함수 수정 필요 */
   const handleSave = () => {
     navigate("/mypage");
   };
@@ -38,6 +34,10 @@ const MyInfoEditPage: React.FC = () => {
       }
     };
     reader.readAsDataURL(file);
+  };
+
+  const setUserInfo = (value: string) => {
+    console.log(value);
   };
 
   return (

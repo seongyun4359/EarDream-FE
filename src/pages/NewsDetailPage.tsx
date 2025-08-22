@@ -1,18 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import MainLayout from "../components/layout/MainLayout";
 import Header from "../components/common/Header";
-import FeedTabs from "../components/feed/FeedTabs";
-import FeedFilters from "../components/feed/FeedFilters";
-import PostCard from "../components/feed/PostCard";
 import type { Post } from "../types/feed";
 import PostDetail from "../components/feed/PostDetail";
 
 const NewsDetailPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("소식함");
-  const [activeFilter, setActiveFilter] = useState("전체");
-
   // TODO: 실제 데이터로 교체
   const post: Post = {
     id: "1",
@@ -24,10 +16,6 @@ const NewsDetailPage: React.FC = () => {
     likes: 5,
     comments: 3,
     isNew: true,
-  };
-
-  const handleWriteNews = () => {
-    navigate("/write-news");
   };
 
   const handleCommentSend = (postId: string, message: string) => {
