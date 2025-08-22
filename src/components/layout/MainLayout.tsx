@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -19,7 +18,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth();
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -119,29 +117,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                   <span className="text-xs font-medium">{item.label}</span>
                 </button>
               ))}
-
-              {/* 로그아웃 버튼 */}
-              <button
-                onClick={logout}
-                className="flex flex-col items-center p-2 rounded-xl transition-all duration-300 text-gray-400 hover:text-red-500"
-              >
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-1 transition-all duration-300 hover:bg-red-50">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                </div>
-                <span className="text-xs font-medium">로그아웃</span>
-              </button>
             </div>
           </nav>
         )}

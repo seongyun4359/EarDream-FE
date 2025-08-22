@@ -14,12 +14,12 @@ const Header: React.FC<HeaderProps> = ({
   rightElement,
 }) => {
   return (
-    <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
-      <div className="flex items-center">
+    <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 py-3 flex items-center justify-center sticky top-0 z-10 relative">
+      <div className="flex items-center absolute left-4">
         {showBackButton && (
           <button
             onClick={onBackClick}
-            className="mr-3 p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 group"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 group"
           >
             <svg
               className="w-5 h-5 text-gray-600 group-hover:text-gray-800"
@@ -36,9 +36,11 @@ const Header: React.FC<HeaderProps> = ({
             </svg>
           </button>
         )}
-        <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
       </div>
-      {rightElement && <div className="flex items-center">{rightElement}</div>}
+      <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+      {rightElement && (
+        <div className="flex items-center absolute right-4">{rightElement}</div>
+      )}
     </header>
   );
 };

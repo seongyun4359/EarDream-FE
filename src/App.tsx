@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import WriteNewsPage from "./pages/WriteNewsPage";
 import NewsBoxPage from "./pages/NewsBoxPage";
+import NewsPreviewPage from "./pages/NewsPreviewPage";
 import MyPage from "./pages/MyPage";
 import SplashPage from "./pages/SplashPage";
 import MyInfoEditPage from "./pages/MyInfoEditPage";
@@ -47,6 +48,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/write-news" element={<WriteNewsPage />} />
           <Route path="/news-box" element={<NewsBoxPage />} />
+          <Route path="/news-preview/:id" element={<NewsPreviewPage />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/mypage/edit" element={<MyInfoEditPage />} />
           <Route path="/member" element={<FamilyMembersPage />} />
