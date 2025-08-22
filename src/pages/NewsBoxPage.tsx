@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 
@@ -11,6 +12,8 @@ interface NewsBook {
 }
 
 const NewsBoxPage: React.FC = () => {
+  const navigate = useNavigate();
+
   // TODO: 실제 데이터로 교체
   const newsBooks: NewsBook[] = [
     {
@@ -37,8 +40,7 @@ const NewsBoxPage: React.FC = () => {
   };
 
   const handlePreview = (newsBook: NewsBook) => {
-    // TODO: 책자 미리보기 로직
-    console.log("책자 미리보기:", newsBook.month);
+    navigate(`/news-preview/${newsBook.id}`);
   };
 
   return (
