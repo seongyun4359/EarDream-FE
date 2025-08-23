@@ -17,8 +17,56 @@ const PaymentPage: React.FC = () => {
 
   const handlePay = () => {
     if (!agreePolicy) return;
-    // 결제 버튼 클릭 시 기본정보 입력 플로우로 이동
-    navigate("/recipient", { state: { familyName } });
+    
+    // 포트원 결제 요청
+    if (typeof window !== "undefined" && (window as any).IMP) {
+      const IMP = (window as any).IMP;
+      
+      // IMP 초기화 (실제 가맹점 식별코드로 변경 필요)
+      IMP.init("imp00000000"); // 테스트용 코드
+      
+      // 결제 요청
+      IMP.request_pay({
+        pg: method === "kakaopay" ? "kakaopay" : "html5_inicis", // PG사
+        pay_method: method === "kakaopay" ? "kakaopay" : "card", // 결제수단
+        merchant_uid: `order_${Date.now()}`, // 주문번호 (고유값)
+        name: `부모님께 이어드림 선물하기 - ${familyName}`, // 주문명
+        amount: 3000, // 결제금액 (3,000원)
+        buyer_email: "test@example.com", // 구매자 이메일
+        buyer_name: "구매자", // 구매자 이름
+        buyer_tel: "010-1234-5678", // 구매자 전화번호
+        digital: true, // 디지털 상품
+        currency: "KRW", // 통화
+        language: "ko", // 언어
+        m_redirect_url: `${window.location.origin}/payment/result`, // 모바일 리다이렉트 URL
+        notice_url: `${window.location.origin}/api/payment/webhook`, // 웹훅 URL
+        custom_data: {
+          familyName: familyName,
+          familyId: "temp_id", // 실제로는 가족 ID 사용
+        },
+      }, (rsp: any) => {
+        if (rsp.success) {
+          // 결제 성공 시
+          console.log("결제 성공:", rsp);
+          alert("결제가 완료되었습니다!");
+          // 결제 완료 후 기본정보 입력 페이지로 이동
+          navigate("/recipient", { 
+            state: { 
+              familyName,
+              paymentData: rsp,
+              merchantUid: rsp.merchant_uid,
+            } 
+          });
+        } else {
+          // 결제 실패 시
+          console.log("결제 실패:", rsp);
+          alert(`결제에 실패했습니다: ${rsp.error_msg}`);
+        }
+      });
+    } else {
+      // IMP SDK가 로드되지 않은 경우
+      alert("결제 시스템을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+    }
   };
 
   return (
