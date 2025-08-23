@@ -43,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({
           </button>
         )}
       </div>
-      <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+
       {rightElement && (
         <div className="flex items-center absolute right-4">{rightElement}</div>
       )}
