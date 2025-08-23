@@ -1,12 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
+import RelationShipSelect from "../components/other/RelationShipSelect";
 
 const WaitListPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const family = {
     name: "김가족",
     email: "family@example.com",
@@ -18,10 +16,11 @@ const WaitListPage: React.FC = () => {
     price: "8,900원",
   };
 
-  /* 가족 구성원 프로필 편집 */
-  const handleEditProfile = () => {
-    navigate("/member/edit");
-  };
+  /* TODO: 승인 로직 함수 추가 필요 */
+  const handleInviteFamily = () => {};
+
+  /* TODO: 거절 로직 함수 추가 필요 */
+  const handleRejectFamily = () => {};
 
   return (
     <MainLayout>
@@ -33,33 +32,44 @@ const WaitListPage: React.FC = () => {
 
         {[1, 2, 3].map((i) => (
           <div key={i} className="bg-white rounded-lg p-4 shadow-sm mt-4">
-            <div className="flex items-center space-x-4 mb-4">
+            <div className="flex items-center space-x-4">
               <img
                 src={family.profileImage}
                 alt={family.name}
-                className="w-16 h-16 rounded-full bg-gray-200"
+                className="w-16 h-16 rounded-full mb-16 bg-gray-200"
               />
+
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-gray-900">
                   {family.name}
                 </h2>
-              </div>
-              <div className="flex gap-4">
-                <Button
-                  variant="primary"
-                  size="small"
-                  onClick={handleEditProfile}
-                >
-                  승인
-                </Button>
 
-                <Button
-                  variant="dangerOutline"
-                  size="small"
-                  onClick={handleEditProfile}
-                >
-                  거부
-                </Button>
+                {/* TODO: 관계 변경 관련 수정 필요 */}
+                <RelationShipSelect
+                  value={family.name}
+                  onChange={handleInviteFamily}
+                  className="mt-2 w-full border rounded-lg p-3 text-gray-500"
+                />
+
+                <div className="flex mt-2 gap-4">
+                  <Button
+                    variant="primary"
+                    size="small"
+                    className="w-full"
+                    onClick={handleInviteFamily}
+                  >
+                    승인
+                  </Button>
+
+                  <Button
+                    variant="dangerOutline"
+                    size="small"
+                    className="w-full"
+                    onClick={handleRejectFamily}
+                  >
+                    거부
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

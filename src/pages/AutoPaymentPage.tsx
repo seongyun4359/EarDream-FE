@@ -5,6 +5,8 @@ import Button from "../components/common/Button";
 import TextCard from "../components/common/TextCard";
 import Alert from "../components/common/Alert";
 import WarningIcon from "../assets/icons/WarningIcon";
+import CardIcon from "../assets/icons/CardIcon";
+import PaymentCard from "../components/other/PaymentCard";
 
 const AutoPaymentPage: React.FC = () => {
   const [isShowAlert, setIsShowAlert] = useState<boolean>(false);
@@ -24,7 +26,29 @@ const AutoPaymentPage: React.FC = () => {
     basicPaymentInfo: "4343 4342 2222 3444",
   };
 
-  const test = () => {};
+  const payments = [
+    {
+      id: 1,
+      label: "신한카드",
+      cardNumber: "**** - **** - **** - 1234",
+      isBasic: true,
+      icon: <CardIcon className="w-10 h-10 text-[#018941]" />,
+    },
+    {
+      id: 2,
+      label: "국민카드",
+      cardNumber: "**** - **** - **** - 5678",
+      isBasic: false,
+      icon: <CardIcon className="w-10 h-10 text-[#016b33]" />,
+    },
+    {
+      id: 3,
+      label: "카카오뱅크 카드",
+      cardNumber: "**** - **** - **** - 9012",
+      isBasic: false,
+      icon: <CardIcon className="w-10 h-10 text-[#feca1b]" />,
+    },
+  ];
 
   const handleShowAlert = () => {
     setIsShowAlert((pre) => !pre);
@@ -77,56 +101,16 @@ const AutoPaymentPage: React.FC = () => {
         )}
 
         <p className="text-xl font-bold mt-8">결제 수단 관리</p>
-        {[1, 2].map((i) => (
-          <div key={i} className="bg-white rounded-lg p-4 shadow-sm mt-4">
-            <div className="flex items-center space-x-4 mb-4">
-              <svg
-                className="w-10 h-8 text-[#018941]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 64 40"
-              >
-                <rect
-                  x="1"
-                  y="1"
-                  width="62"
-                  height="38"
-                  rx="6"
-                  ry="6"
-                  className="stroke-current"
-                />
-                <line x1="4" y1="8" x2="60" y2="8" className="stroke-current" />
-                <rect
-                  x="48"
-                  y="24"
-                  width="8"
-                  height="8"
-                  rx="1"
-                  className="stroke-current"
-                />
-              </svg>
-
-              <div className="flex-1">
-                <h2 className="text-sm font-semibold text-gray-600">
-                  {user.basicPaymentInfo}
-                </h2>
-                <h2 className="text-sm font-semibold text-gray-400">
-                  {user.basicPayment}
-                </h2>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="bg-[#018941] text-white shadow-sm font-medium rounded-2xl transition-all px-5 py-2.5 text-base">
-                  <p>기본</p>
-                </div>
-                <Button variant="outline" size="small" onClick={test}>
-                  편집
-                </Button>
-              </div>
-            </div>
-          </div>
+        {payments.map((payment) => (
+          <PaymentCard
+            key={payment.cardNumber}
+            icon={payment.icon}
+            label={payment.label}
+            cardNumber={payment.cardNumber}
+            isBasic={payment.isBasic}
+          />
         ))}
+
         <Button
           type="button"
           size="medium"
@@ -141,3 +125,10 @@ const AutoPaymentPage: React.FC = () => {
 };
 
 export default AutoPaymentPage;
+
+// <div className="flex items-center">
+//               <span className="inline-flex items-center justify-center w-8 h-5 text-[11px] font-bold rounded bg-[#fee500] text-black mr-2">
+//                 pay
+//               </span>
+//               <span className="font-medium">카카오페이</span>
+//             </div>

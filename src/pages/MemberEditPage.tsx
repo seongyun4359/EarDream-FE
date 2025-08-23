@@ -8,6 +8,7 @@ import Input from "../components/common/Input";
 import Alert from "../components/common/Alert";
 
 import WarningIcon from "../assets/icons/WarningIcon";
+import RelationShipSelect from "../components/other/RelationShipSelect";
 
 const MemberEditPage: React.FC = () => {
   const user = {
@@ -73,20 +74,11 @@ const MemberEditPage: React.FC = () => {
         {/* 관계 수정 */}
         <div>
           <p className="font-bold">관계</p>
-          <select
+          <RelationShipSelect
             value={userInfo}
-            onChange={(e) => setUserInfo(e.target.value)}
+            onChange={setUserInfo}
             className="mt-4 w-full border rounded-lg p-3 text-gray-500"
-          >
-            <option value="">관계를 선택해주세요</option>
-            <option value="부모">부모</option>
-            <option value="배우자">배우자</option>
-            <option value="자녀">자녀</option>
-            <option value="형제자매">형제/자매</option>
-            <option value="할머니">할머니</option>
-            <option value="할아버지">할아버지</option>
-            <option value="기타">기타</option>
-          </select>
+          />
         </div>
 
         <div className="flex items-center space-x-2">
