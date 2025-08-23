@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({
         {showBackButton && (
           <button
             onClick={onBackClick}
-            className="mr-3 p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 group"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 group"
           >
             <svg
               className="w-5 h-5 text-gray-600 group-hover:text-gray-800"
@@ -43,7 +43,10 @@ const Header: React.FC<HeaderProps> = ({
           </button>
         )}
       </div>
-      {rightElement && <div className="flex items-center">{rightElement}</div>}
+      <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+      {rightElement && (
+        <div className="flex items-center absolute right-4">{rightElement}</div>
+      )}
     </header>
   );
 };
