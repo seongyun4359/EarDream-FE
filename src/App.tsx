@@ -30,6 +30,7 @@ import { initKakao } from "./services/kakaoAuth";
 import SubscribePage from "./pages/SubscribePage";
 import AutoPaymentPage from "./pages/AutoPaymentPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
+import PaymentManagePage from "./pages/PaymentManagePage";
 
 function App() {
   useEffect(() => {
@@ -66,7 +67,10 @@ function App() {
           <Route path="/mypage/subscribe" element={<SubscribePage />} />
           <Route path="/mypage/auto-payment" element={<AutoPaymentPage />} />
           <Route path="/home/news/detail" element={<NewsDetailPage />} />
-
+          <Route
+            path="/mypage/auto-payment/manage"
+            element={<PaymentManagePage />}
+          />
           <Route
             path="/home"
             element={
