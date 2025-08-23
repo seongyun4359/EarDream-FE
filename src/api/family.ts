@@ -40,6 +40,7 @@ export const createFamily = async (
   // 디버깅: 요청 데이터 로그
   console.log("API 요청 데이터:", request);
   console.log("API 요청 URL:", `${baseUrl}/api/v1/families`);
+  console.log("요청 본문 JSON:", JSON.stringify(request));
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

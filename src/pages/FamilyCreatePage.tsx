@@ -53,9 +53,9 @@ const FamilyCreatePage: React.FC = () => {
       // 가족 생성 API 호출
       const request: CreateFamilyRequest = {
         familyName: familyName.trim(),
-        familyProfileImageUrl: null,
-        userId: 1, // 임시로 고정값 사용 (백엔드 테스트용)
-        monthlyDeadline: 4, // 숫자
+        familyProfileImageUrl: "", // 백엔드 API 문서에 맞춰 빈 문자열 사용
+        userId: 5, // 임시로 고정값 사용 (백엔드 테스트용)
+        monthlyDeadline: 4, // 백엔드 검증: 2 또는 4만 허용
       };
 
       const response = await createFamily(request);
