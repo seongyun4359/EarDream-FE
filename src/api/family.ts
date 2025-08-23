@@ -1,4 +1,4 @@
-import { getJwtAccessToken } from "./auth";
+// JWT 인증 제거로 인해 import 불필요
 
 export interface CreateFamilyRequest {
   familyName: string;
@@ -34,9 +34,8 @@ export const createFamily = async (
   // 개발 환경에서는 프록시 사용, 프로덕션에서는 환경변수 사용
   const baseUrl = import.meta.env.DEV ? "" : API_BASE_URL;
 
-  // JWT 액세스 토큰 가져오기
-  const accessToken = getJwtAccessToken();
-  console.log("JWT 액세스 토큰:", accessToken);
+  // JWT 인증 제거 (백엔드에서 토큰 인증을 제거했으므로)
+  console.log("JWT 인증 제거됨 - Authorization 헤더 없이 요청");
 
   // 디버깅: 요청 데이터 로그
   console.log("API 요청 데이터:", request);
@@ -46,13 +45,8 @@ export const createFamily = async (
     "Content-Type": "application/json",
   };
 
-  // 액세스 토큰이 있으면 Authorization 헤더에 추가
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
-    console.log("Authorization 헤더 추가됨");
-  } else {
-    console.log("JWT 토큰이 없어 Authorization 헤더 없이 요청");
-  }
+  // Authorization 헤더 제거 (백엔드에서 토큰 인증 제거됨)
+  console.log("백엔드에서 토큰 인증을 제거했으므로 Authorization 헤더 없음");
 
   const response = await fetch(`${baseUrl}/api/v1/families`, {
     method: "POST",

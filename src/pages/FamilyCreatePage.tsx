@@ -11,7 +11,7 @@ const FamilyCreatePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isReady = familyName.trim().length > 0;
 
-  // 로그인 상태 확인
+  // 로그인 상태 확인 (임시로 비활성화)
   useEffect(() => {
     console.log("FamilyCreatePage - 로그인 상태 확인:", {
       isLoggedIn,
@@ -25,13 +25,19 @@ const FamilyCreatePage: React.FC = () => {
       return;
     }
 
-    // 로그인 상태가 아니고, 이미 로그인 페이지가 아닌 경우에만 리다이렉트
+    // 임시로 로그인 상태 체크 비활성화 (백엔드에서 토큰 인증 제거됨)
+    console.log(
+      "백엔드에서 토큰 인증을 제거했으므로 로그인 상태와 관계없이 진행"
+    );
+
+    // 기존 로그인 상태 확인 로직 주석 처리
+    /*
     if (!isLoggedIn && window.location.pathname !== "/login") {
-      console.log("로그인 상태가 아닙니다. 로그인 페이지로 이동합니다.");
-      navigate("/login");
+      console.log("로그인 상태가 아닙니다..");
     } else if (isLoggedIn) {
       console.log("로그인 상태 확인됨:", user);
     }
+    */
   }, [isLoggedIn, user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,13 +48,14 @@ const FamilyCreatePage: React.FC = () => {
   const handleConfirm = async () => {
     if (!isReady) return;
     setIsSubmitting(true);
+
     try {
       // 가족 생성 API 호출
       const request: CreateFamilyRequest = {
         familyName: familyName.trim(),
         familyProfileImageUrl: null,
-        userId: user?.id || 1, // 카카오 사용자 ID 사용
-        monthlyDeadline: 4, // 숫자로 변경
+        userId: 1, // 임시로 고정값 사용 (백엔드 테스트용)
+        monthlyDeadline: 4, // 숫자
       };
 
       const response = await createFamily(request);
@@ -63,7 +70,6 @@ const FamilyCreatePage: React.FC = () => {
       });
     } catch (error) {
       console.error("가족 생성 실패:", error);
-      // TODO: 에러 처리 (토스트 메시지 등)
       alert("가족 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);

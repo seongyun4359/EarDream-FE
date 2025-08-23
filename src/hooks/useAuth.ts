@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import type { KakaoUser } from "../types/auth";
-import {
-  checkKakaoLoginStatus,
-  getKakaoUserInfo,
-  logoutFromKakao,
-} from "../services/kakaoAuth";
+import { logoutFromKakao } from "../services/kakaoAuth";
 
 export const useAuth = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,25 +28,30 @@ export const useAuth = () => {
       setLoading(true);
       console.log("useAuth - checkLoginStatus 시작");
 
-      const isLoggedInStatus = checkKakaoLoginStatus();
-      console.log("useAuth - checkKakaoLoginStatus 결과:", isLoggedInStatus);
+      // JWT 토큰이 있는지 먼저 확인
+      const jwtToken = localStorage.getItem("jwt_access_token");
+      console.log("useAuth - JWT 토큰 확인:", !!jwtToken);
 
-      if (isLoggedInStatus) {
-        console.log("useAuth - 로그인 상태 확인됨, 사용자 정보 조회 중...");
-        const userInfo = await getKakaoUserInfo();
-        console.log("useAuth - 사용자 정보 조회 결과:", userInfo);
-
-        if (userInfo) {
-          setUser(userInfo);
-          setIsLoggedIn(true);
-          console.log("useAuth - 로그인 상태 설정 완료: true");
-        } else {
-          console.log("useAuth - 사용자 정보가 null, 로그아웃 상태로 설정");
-          setUser(null);
-          setIsLoggedIn(false);
-        }
+      if (jwtToken) {
+        // JWT 토큰이 있으면 로그인 상태로 설정
+        console.log("useAuth - JWT 토큰 존재, 로그인 상태로 설정");
+        setIsLoggedIn(true);
+        // 사용자 정보는 JWT에서 추출하거나 별도 API로 조회
+        setUser({
+          id: 1,
+          connected_at: new Date().toISOString(),
+          properties: {
+            nickname: "사용자",
+          },
+          kakao_account: {
+            profile: {
+              nickname: "사용자",
+            },
+          },
+        });
       } else {
-        console.log("useAuth - 로그인 상태가 아님, 로그아웃 상태로 설정");
+        // JWT 토큰이 없으면 로그아웃 상태로 설정 (카카오 API 호출 안함)
+        console.log("useAuth - JWT 토큰이 없어 로그아웃 상태로 설정");
         setUser(null);
         setIsLoggedIn(false);
       }

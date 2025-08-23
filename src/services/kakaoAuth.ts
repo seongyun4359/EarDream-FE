@@ -1,4 +1,4 @@
-import type { KakaoUser, KakaoLoginResponse } from "../types/auth";
+import type { KakaoUser } from "../types/auth";
 
 // 카카오 JavaScript 키 (환경 변수에서 가져오기)
 const KAKAO_JS_KEY = import.meta.env.VITE_KAKAO_JS_KEY;
@@ -15,7 +15,7 @@ export const initKakao = (): void => {
 };
 
 // 모바일 기기 감지
-const isMobile = (): boolean => {
+export const isMobile = (): boolean => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
