@@ -1,11 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { createFamily } from "../api/family";
+import type { CreateFamilyRequest } from "../api/family";
+import { useAuth } from "../hooks/useAuth";
 
 const FamilyCreatePage: React.FC = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, user, loading } = useAuth();
   const [familyName, setFamilyName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isReady = familyName.trim().length > 0;
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    console.log("FamilyCreatePage - 로그인 상태 확인:", {
+      isLoggedIn,
+      user,
+      loading,
+    });
+
+    // 로딩 중이면 아직 확인하지 않음
+    if (loading) {
+      console.log("로그인 상태 확인 중...");
+      return;
+    }
+
+    // 로그인 상태가 아니고, 이미 로그인 페이지가 아닌 경우에만 리다이렉트
+    if (!isLoggedIn && window.location.pathname !== "/login") {
+      console.log("로그인 상태가 아닙니다. 로그인 페이지로 이동합니다.");
+      navigate("/login");
+    } else if (isLoggedIn) {
+      console.log("로그인 상태 확인됨:", user);
+    }
+  }, [isLoggedIn, user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,12 +43,43 @@ const FamilyCreatePage: React.FC = () => {
     if (!isReady) return;
     setIsSubmitting(true);
     try {
-      // TODO: API 연동 (가족 생성) 후 결제 페이지로 이동
-      navigate("/family/subscribe", { state: { familyName } });
+      // 가족 생성 API 호출
+      const request: CreateFamilyRequest = {
+        familyName: familyName.trim(),
+        familyProfileImageUrl: null,
+        userId: user?.id || 1, // 카카오 사용자 ID 사용
+        monthlyDeadline: 4, // 숫자로 변경
+      };
+
+      const response = await createFamily(request);
+
+      // 성공 시 결제 페이지로 이동
+      navigate("/family/subscribe", {
+        state: {
+          familyName: response.familyName,
+          familyId: response.familyId,
+          inviteCode: response.inviteCode,
+        },
+      });
+    } catch (error) {
+      console.error("가족 생성 실패:", error);
+      // TODO: 에러 처리 (토스트 메시지 등)
+      alert("가족 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // 로딩 중이면 로딩 화면 표시
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f2f2f7] flex justify-center items-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600">로그인 상태 확인 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f2f2f7] flex justify-center">

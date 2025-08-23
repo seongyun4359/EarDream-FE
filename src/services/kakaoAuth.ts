@@ -21,66 +21,26 @@ const isMobile = (): boolean => {
   );
 };
 
-// 카카오 로그인 실행
+// 백엔드 카카오 로그인 URL을 사용한 로그인
 export const loginWithKakao = async (): Promise<KakaoUser | null> => {
   try {
-    if (typeof window === "undefined" || !window.Kakao) {
-      throw new Error("카카오 SDK가 로드되지 않았습니다.");
+    if (typeof window === "undefined") {
+      throw new Error("브라우저 환경이 아닙니다.");
     }
 
-    // 모바일 환경에서는 리다이렉트 방식 사용
-    if (isMobile()) {
-      console.log("모바일 환경 감지 - 리다이렉트 방식으로 로그인");
-      const redirectUri = `${window.location.origin}/login`;
-      const authUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_JS_KEY}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`;
-      window.location.href = authUrl;
-      return null; // 리다이렉트되므로 null 반환
-    }
+    // 카카오 로그인 URL 직접 구성
+    const clientId = KAKAO_JS_KEY;
+    const redirectUri = `${window.location.origin}/login`;
+    const responseType = "code";
+    const state = "kakao_login";
 
-    // 데스크톱 환경에서는 팝업 방식 사용
-    return new Promise((resolve, reject) => {
-      console.log("데스크톱 환경 - 팝업 방식으로 로그인");
+    const loginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&state=${state}`;
 
-      // 카카오 로그인 실행 (웹 전용 방식)
-      window.Kakao.Auth.login({
-        // scope 제거 - 기본 권한만으로 로그인
-        success: async (authObj: KakaoLoginResponse) => {
-          try {
-            console.log("카카오 로그인 성공:", authObj);
-            console.log("액세스 토큰:", authObj.access_token);
-            console.log("토큰 타입:", authObj.token_type);
+    console.log("카카오 로그인 URL:", loginUrl);
 
-            // 토큰을 로컬 스토리지에 저장
-            localStorage.setItem("kakao_access_token", authObj.access_token);
-            localStorage.setItem("kakao_refresh_token", authObj.refresh_token);
-            console.log("토큰 저장 완료");
-
-            // 즉시 사용자 정보 가져오기 시도
-            try {
-              console.log("사용자 정보 가져오기 시작...");
-              const userInfo = await getKakaoUserInfo();
-              if (userInfo) {
-                console.log("사용자 정보 가져오기 성공:", userInfo);
-                resolve(userInfo);
-              } else {
-                console.error("사용자 정보가 null입니다.");
-                reject(new Error("사용자 정보를 가져올 수 없습니다."));
-              }
-            } catch (userError) {
-              console.error("사용자 정보 가져오기 실패:", userError);
-              reject(userError);
-            }
-          } catch (error) {
-            console.error("로그인 성공 후 처리 중 오류:", error);
-            reject(error);
-          }
-        },
-        fail: (err: unknown) => {
-          console.error("카카오 로그인 실패:", err);
-          reject(new Error("카카오 로그인에 실패했습니다."));
-        },
-      });
-    });
+    // 카카오 로그인 페이지로 리다이렉트
+    window.location.href = loginUrl;
+    return null; // 리다이렉트되므로 null 반환
   } catch (error) {
     console.error("카카오 로그인 오류:", error);
     return null;
@@ -191,11 +151,24 @@ export const handleKakaoRedirect = async (): Promise<KakaoUser | null> => {
 // 로그인 상태 확인
 export const checkKakaoLoginStatus = (): boolean => {
   if (typeof window === "undefined" || !window.Kakao) {
+    console.log("checkKakaoLoginStatus - window.Kakao 없음");
     return false;
   }
 
   const token = localStorage.getItem("kakao_access_token");
-  return !!token && window.Kakao.Auth.getAccessToken() !== null;
+
+  try {
+    const kakaoToken = window.Kakao.Auth.getAccessToken();
+    console.log("checkKakaoLoginStatus - 로컬 스토리지 토큰:", !!token);
+    console.log("checkKakaoLoginStatus - 카카오 SDK 토큰:", !!kakaoToken);
+
+    // 로컬 스토리지에 토큰이 있으면 로그인 상태로 간주
+    return !!token;
+  } catch (error) {
+    console.log("checkKakaoLoginStatus - 카카오 SDK 오류:", error);
+    // 오류가 발생해도 로컬 스토리지에 토큰이 있으면 로그인 상태로 간주
+    return !!token;
+  }
 };
 
 // 액세스 토큰 가져오기

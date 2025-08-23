@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  loginWithKakao,
-  initKakao,
-  handleKakaoRedirect,
-} from "../services/kakaoAuth";
+import { loginWithKakao, initKakao } from "../services/kakaoAuth";
+import { getJwtToken } from "../api/auth";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,28 +16,24 @@ const LoginPage: React.FC = () => {
     const handleRedirect = async () => {
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get("code");
+      const state = urlParams.get("state");
 
       if (code && !isProcessing) {
         setIsProcessing(true);
         console.log("인가 코드 발견:", code);
+        console.log("state:", state);
+
         try {
-          const user = await handleKakaoRedirect();
-          if (user) {
-            console.log("모바일 로그인 성공:", user);
-            // URL에서 인가 코드 제거 후 튜토리얼로 이동
-            window.history.replaceState({}, document.title, "/login");
-            navigate("/tutorial");
-          } else {
-            // 임시 해결책: 인가 코드가 있으면 로그인 성공으로 간주
-            console.log(
-              "인가 코드 확인됨 - 로그인 성공으로 간주하고 튜토리얼로 이동"
-            );
-            // URL에서 인가 코드 제거 후 튜토리얼로 이동
-            window.history.replaceState({}, document.title, "/login");
-            navigate("/tutorial");
-          }
+          // JWT 토큰 발급받기
+          console.log("JWT 토큰 발급 시작...");
+          const jwtResponse = await getJwtToken(code, state || "");
+          console.log("JWT 토큰 발급 성공:", jwtResponse);
+
+          // URL에서 인가 코드 제거 후 튜토리얼로 이동
+          window.history.replaceState({}, document.title, "/login");
+          navigate("/tutorial");
         } catch (error) {
-          console.error("모바일 로그인 오류:", error);
+          console.error("JWT 토큰 발급 실패:", error);
           // 오류가 발생해도 인가 코드가 있으면 성공으로 간주
           console.log("오류 발생했지만 인가 코드가 있으므로 튜토리얼로 이동");
           // URL에서 인가 코드 제거 후 튜토리얼로 이동
