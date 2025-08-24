@@ -18,7 +18,8 @@ const HomePage: React.FC = () => {
     {
       id: "1",
       author: "구성원",
-      authorImage: "/api/placeholder/40/40",
+      authorImage:
+        "https://via.placeholder.com/40x40/018941/FFFFFF?text=작성자",
       timeAgo: "2시간 전",
       title: "제목",
       content: "게시글 내용 2줄\n두 번째 줄입니다",
@@ -29,7 +30,8 @@ const HomePage: React.FC = () => {
     {
       id: "2",
       author: "구성원",
-      authorImage: "/api/placeholder/40/40",
+      authorImage:
+        "https://via.placeholder.com/40x40/018941/FFFFFF?text=작성자",
       timeAgo: "4시간 전",
       title: "제목",
       content: "게시글 내용 2줄\n두 번째 줄입니다",

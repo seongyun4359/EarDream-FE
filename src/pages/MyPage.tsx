@@ -17,7 +17,7 @@ const MyPage: React.FC = () => {
   const user = {
     name: "김가족",
     email: "family@example.com",
-    profileImage: "/api/placeholder/80/80",
+    profileImage: "https://via.placeholder.com/80x80/018941/FFFFFF?text=프로필",
     subscriptionPlan: "월 구독",
     subscriptionStatus: "정상 구독 중",
     nextPaymentDate: "2024년 2월 4일",
