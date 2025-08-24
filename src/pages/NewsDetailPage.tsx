@@ -45,7 +45,11 @@ const NewsDetailPage: React.FC = () => {
 
   return (
     <MainLayout>
-      <Header title="소식 상세" />
+      <Header
+        title="소식 상세"
+        showBackButton
+        onBackClick={() => navigate("/home")}
+      />
 
       {/* 메인 콘텐츠 */}
       <div className="flex-1 bg-white">

@@ -27,8 +27,6 @@ const EditNewsPage: React.FC = () => {
   const [additionalImages, setAdditionalImages] = useState<ImageFile[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const userId = useUserStore((state) => state.userId);
-
   const MAX_IMAGES = 4;
   const MIN_DESCRIPTION = 0;
   const MAX_DESCRIPTION = 100;
