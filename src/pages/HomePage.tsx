@@ -194,13 +194,15 @@ const HomePage: React.FC = () => {
             </div>
           )}
 
-          <div className="flex flex-col items-center justify-center mt-14 text-gray-400">
-            <OpenBoxIcon className="w-30 h-30" />
-            <p className="text-center mt-8">
-              앗! <br />
-              보관함이 비어있어요
-            </p>
-          </div>
+          {!dumyAlbum && (
+            <div className="flex flex-col items-center justify-center mt-14 text-gray-400">
+              <OpenBoxIcon className="w-30 h-30" />
+              <p className="text-center mt-8">
+                앗! <br />
+                보관함이 비어있어요
+              </p>
+            </div>
+          )}
         </>
       )}
 

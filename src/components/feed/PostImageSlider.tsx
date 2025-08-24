@@ -19,7 +19,7 @@ const PostImageSlider: React.FC<PostImageSliderProps> = ({
     setCurrentIndex((prev) => (prev === imageUrls.length - 1 ? 0 : prev + 1));
 
   return (
-    <div className="relative w-full h-48 mb-3">
+    <div className="relative w-full h-full mb-3">
       <img
         src={imageUrls[currentIndex]}
         alt={`${title} ${currentIndex + 1}`}

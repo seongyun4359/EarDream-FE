@@ -51,7 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
       <h3 className="font-medium text-gray-900 mb-3">{post.title}</h3>
 
       {/* 게시물 이미지 */}
-      <div className="bg-gray-200 rounded-lg h-70 mb-3 flex items-center justify-center overflow-hidden">
+      <div className="bg-gray-200 rounded-lg w-full h-full mb-3 flex items-center justify-center overflow-hidden">
         {post.imageUrls ? (
           <img
             src={post.imageUrls[0]}
@@ -70,7 +70,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
       </div>
 
       {/* 게시물 내용 */}
-      <p className="text-gray-700 text-sm mb-4 whitespace-pre-line">
+      <p className="text-gray-700 text-me mb-4 whitespace-pre-line">
         {post.content}
       </p>
 
