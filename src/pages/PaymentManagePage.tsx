@@ -56,7 +56,7 @@ const PaymentManagePage: React.FC = () => {
         icon={
           <CardIcon
             className="w-20 mt-4"
-            style={{ color: selectedPayment.iconColor }} // 이렇게 동적으로 적용
+            style={{ color: selectedPayment.iconColor }}
           />
         }
         label={selectedPayment.label}
