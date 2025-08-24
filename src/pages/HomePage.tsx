@@ -135,7 +135,7 @@ const HomePage: React.FC = () => {
             </div>
 
             {/* 플로팅 글쓰기 버튼 */}
-            <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50 flex justify-end">
+            <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50 flex justify-center">
               <Button
                 variant="primary"
                 className="w-24 h-10 rounded-full shadow-lg flex items-center justify-center text-me"
