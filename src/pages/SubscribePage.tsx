@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
-import Button from "../components/common/Button";
 
 const SubscribePage: React.FC = () => {
   // TODO: 실제 사용자 데이터로 교체

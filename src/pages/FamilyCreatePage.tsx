@@ -1,11 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { createFamily } from "../api/family";
+import type { CreateFamilyRequest } from "../api/family";
+import { useAuth } from "../hooks/useAuth";
 
 const FamilyCreatePage: React.FC = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, user, loading } = useAuth();
   const [familyName, setFamilyName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isReady = familyName.trim().length > 0;
+
+  // 로그인 상태 확인 (임시로 비활성화)
+  useEffect(() => {
+    console.log("FamilyCreatePage - 로그인 상태 확인:", {
+      isLoggedIn,
+      user,
+      loading,
+    });
+
+    // 로딩 중이면 아직 확인하지 않음
+    if (loading) {
+      console.log("로그인 상태 확인 중...");
+      return;
+    }
+
+    // 임시로 로그인 상태 체크 비활성화 (백엔드에서 토큰 인증 제거됨)
+    console.log(
+      "백엔드에서 토큰 인증을 제거했으므로 로그인 상태와 관계없이 진행"
+    );
+
+    // 기존 로그인 상태 확인 로직 주석 처리
+    /*
+    if (!isLoggedIn && window.location.pathname !== "/login") {
+      console.log("로그인 상태가 아닙니다..");
+    } else if (isLoggedIn) {
+      console.log("로그인 상태 확인됨:", user);
+    }
+    */
+  }, [isLoggedIn, user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,13 +48,55 @@ const FamilyCreatePage: React.FC = () => {
   const handleConfirm = async () => {
     if (!isReady) return;
     setIsSubmitting(true);
+
     try {
-      // TODO: API 연동 (가족 생성) 후 결제 페이지로 이동
-      navigate("/family/subscribe", { state: { familyName } });
+      // 가족 생성 API 호출
+      const request: CreateFamilyRequest = {
+        familyName: familyName.trim(),
+        familyProfileImageUrl: "", // 백엔드 API 문서에 맞춰 빈 문자열 사용
+        userId: 5, // 임시로 고정값 사용 (백엔드 테스트용)
+        monthlyDeadline: 4, // 백엔드 검증: 2 또는 4만 허용
+      };
+
+      const response = await createFamily(request);
+
+      // 디버깅: API 응답 로깅
+      console.log("가족 생성 API 응답:", response);
+      console.log("응답 타입:", typeof response);
+      console.log("응답 키들:", Object.keys(response));
+
+      // 백엔드 응답 구조에 맞게 수정 (data 객체 안에 있을 수 있음)
+      const familyData = response.data || response;
+
+      console.log("가족 데이터:", familyData);
+      console.log("가족 ID:", familyData.familyId);
+
+      // 성공 시 결제 페이지로 이동
+      navigate("/payment", {
+        state: {
+          familyName: familyData.familyName,
+          familyId: familyData.familyId,
+          inviteCode: familyData.inviteCode,
+        },
+      });
+    } catch (error) {
+      console.error("가족 생성 실패:", error);
+      alert("가족 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // 로딩 중이면 로딩 화면 표시
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f2f2f7] flex justify-center items-center">
+        <div className="text-center">
+          <div className="text-lg text-gray-600">로그인 상태 확인 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f2f2f7] flex justify-center">

@@ -84,7 +84,6 @@ const HomePage: React.FC = () => {
             })
           )
         ).flat();
-
         setPosts(detailedPosts);
         console.log("이것은 ", detailedPosts);
       } catch (error) {
