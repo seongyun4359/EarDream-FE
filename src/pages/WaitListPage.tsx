@@ -1,26 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
 import RelationShipSelect from "../components/other/RelationShipSelect";
+import { useUserStore } from "../stores/useUserStore";
+import { useFamilyStore } from "../stores/usefamilyStore";
+import { approveInvitation, rejectInvitation } from "../services/familyApi";
 
 const WaitListPage: React.FC = () => {
-  const family = {
-    name: "김가족",
-    email: "family@example.com",
-    profileImage: "/api/placeholder/80/80",
-    subscriptionPlan: "월 구독",
-    subscriptionStatus: "정상 구독 중",
-    nextPaymentDate: "2024년 2월 4일",
-    subscriptionStartDate: "2023년 1월 1일",
-    price: "8,900원",
+  const familyId = useUserStore((state) => state.familyId);
+  const invitedFamilyMembers = useFamilyStore(
+    (state) => state.invitedFamilyMembers
+  );
+
+  const [relationshipMap, setRelationshipMap] = useState<{
+    [key: number]: string;
+  }>({});
+
+  const handleRelationshipChange = (invitationId: number, value: string) => {
+    setRelationshipMap((prev) => ({ ...prev, [invitationId]: value }));
   };
 
-  /* TODO: 승인 로직 함수 추가 필요 */
-  const handleInviteFamily = () => {};
+  /* 초대 승인 함수 */
+  const handleInviteFamily = async (invitationId: number) => {
+    const relationship = relationshipMap[invitationId] || "가족";
+    try {
+      await approveInvitation(familyId, invitationId, relationship);
+      alert("초대가 승인되었습니다!");
+    } catch (err) {
+      console.error(err);
+      alert("초대 승인 실패하였습니다.");
+    }
+  };
 
   /* TODO: 거절 로직 함수 추가 필요 */
-  const handleRejectFamily = () => {};
+  const handleRejectFamily = async (invitationId: number) => {
+    try {
+      await rejectInvitation(invitationId);
+    } catch (err) {
+      console.error("초대 거절에 실패하였습니다.", err);
+    }
+  };
 
   return (
     <MainLayout>
@@ -30,24 +50,28 @@ const WaitListPage: React.FC = () => {
         {/* 대기리스트 */}
         <p className="font-bold mt-4">대기리스트</p>
 
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-lg p-4 shadow-sm mt-4">
+        {invitedFamilyMembers.map((member) => (
+          <div
+            key={member.invitationId}
+            className="bg-white rounded-lg p-4 shadow-sm mt-4"
+          >
             <div className="flex items-center space-x-4">
               <img
-                src={family.profileImage}
-                alt={family.name}
+                src="/api/placeholder/80/80"
+                alt={member.name}
                 className="w-16 h-16 rounded-full mb-16 bg-gray-200"
               />
 
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {family.name}
+                  {member.name}
                 </h2>
 
-                {/* TODO: 관계 변경 관련 수정 필요 */}
                 <RelationShipSelect
-                  value={family.name}
-                  onChange={handleInviteFamily}
+                  value={relationshipMap[member.invitationId] || ""}
+                  onChange={(value) =>
+                    handleRelationshipChange(member.invitationId, value)
+                  }
                   className="mt-2 w-full border rounded-lg p-3 text-gray-500"
                 />
 
@@ -56,7 +80,7 @@ const WaitListPage: React.FC = () => {
                     variant="primary"
                     size="small"
                     className="w-full"
-                    onClick={handleInviteFamily}
+                    onClick={() => handleInviteFamily(member.invitationId)}
                   >
                     승인
                   </Button>
@@ -65,7 +89,7 @@ const WaitListPage: React.FC = () => {
                     variant="dangerOutline"
                     size="small"
                     className="w-full"
-                    onClick={handleRejectFamily}
+                    onClick={() => handleRejectFamily(member.invitationId)}
                   >
                     거부
                   </Button>

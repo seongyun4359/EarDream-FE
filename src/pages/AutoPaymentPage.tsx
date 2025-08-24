@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
@@ -7,55 +7,27 @@ import Alert from "../components/common/Alert";
 import WarningIcon from "../assets/icons/WarningIcon";
 import CardIcon from "../assets/icons/CardIcon";
 import PaymentCard from "../components/other/PaymentCard";
+import { usePaymentStore } from "../stores/usePaymentStore";
 
 const AutoPaymentPage: React.FC = () => {
-  const [isShowAlert, setIsShowAlert] = useState<boolean>(false);
+  const [isShowAlert, setIsShowAlert] = useState(false);
+  const payments = usePaymentStore((state) => state.payments);
+
+  const handleShowAlert = () => setIsShowAlert((prev) => !prev);
+
+  /* TODO: 자동 결제 해지 함수 */
+  const handleCancelAutoPayment = () => {};
 
   // TODO: 실제 사용자 데이터로 교체
   const user = {
     name: "김가족",
     email: "family@example.com",
-    profileImage: "/api/placeholder/80/80",
-    subscriptionPlan: "월 구독",
     subscriptionStatus: "정상 구독 중",
     nextPaymentDate: "2024년 2월 4일",
     subscriptionStartDate: "2023년 1월 1일",
-    price: "8,900원",
-    delivery: "배송 완료",
-    basicPayment: "신한카드",
-    basicPaymentInfo: "4343 4342 2222 3444",
   };
 
-  const payments = [
-    {
-      id: 1,
-      label: "신한카드",
-      cardNumber: "**** - **** - **** - 1234",
-      isBasic: true,
-      icon: <CardIcon className="w-10 h-10 text-[#018941]" />,
-    },
-    {
-      id: 2,
-      label: "국민카드",
-      cardNumber: "**** - **** - **** - 5678",
-      isBasic: false,
-      icon: <CardIcon className="w-10 h-10 text-[#016b33]" />,
-    },
-    {
-      id: 3,
-      label: "카카오뱅크 카드",
-      cardNumber: "**** - **** - **** - 9012",
-      isBasic: false,
-      icon: <CardIcon className="w-10 h-10 text-[#feca1b]" />,
-    },
-  ];
-
-  const handleShowAlert = () => {
-    setIsShowAlert((pre) => !pre);
-  };
-
-  /* TODO: 자동 결제 해지 함수 추가 */
-  const handleCancelAutoPayment = () => {};
+  useEffect(() => {}, []);
 
   return (
     <MainLayout>
@@ -74,7 +46,6 @@ const AutoPaymentPage: React.FC = () => {
           ]}
         />
 
-        {/* 자동 결제 해지 버튼 */}
         <Button
           type="button"
           size="medium"
@@ -103,11 +74,14 @@ const AutoPaymentPage: React.FC = () => {
         <p className="text-xl font-bold mt-8">결제 수단 관리</p>
         {payments.map((payment) => (
           <PaymentCard
-            key={payment.cardNumber}
-            icon={payment.icon}
-            label={payment.label}
-            cardNumber={payment.cardNumber}
-            isBasic={payment.isBasic}
+            key={payment.id}
+            payment={payment}
+            icon={
+              <CardIcon
+                className="w-10 h-10"
+                style={{ color: payment.iconColor }}
+              />
+            }
           />
         ))}
 
@@ -125,10 +99,3 @@ const AutoPaymentPage: React.FC = () => {
 };
 
 export default AutoPaymentPage;
-
-// <div className="flex items-center">
-//               <span className="inline-flex items-center justify-center w-8 h-5 text-[11px] font-bold rounded bg-[#fee500] text-black mr-2">
-//                 pay
-//               </span>
-//               <span className="font-medium">카카오페이</span>
-//             </div>
