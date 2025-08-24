@@ -1,29 +1,38 @@
 import React from "react";
 import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
+import { usePaymentStore } from "../../stores/usePaymentStore";
 
 interface PaymentCardProps {
+  id: number;
   icon: React.ReactNode;
   label: string;
   cardNumber?: string;
-  isBasic: boolean;
+  onClick?: () => void;
 }
 
 const PaymentCard: React.FC<PaymentCardProps> = ({
+  id,
   icon,
   label,
   cardNumber,
-  isBasic = false,
+  onClick,
 }) => {
   const navigate = useNavigate();
+  const payments = usePaymentStore((state) => state.payments);
 
-  /* TODO: 결제수단 관리 페이지로 이동 필요 */
+  const payment = payments.find((p) => p.id === id);
+  if (!payment) return null;
+
   const handleEditPayment = () => {
-    navigate("/mypage/auto-payment/manage");
+    navigate(`/mypage/auto-payment/manage/${id}`);
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm mt-4">
+    <div
+      className="bg-white rounded-lg p-4 shadow-sm mt-4 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex items-center space-x-4 mb-4">
         {icon}
 
@@ -33,7 +42,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
         </div>
 
         <div className="flex gap-4">
-          {isBasic && (
+          {payment.isBasic && (
             <div className="bg-[#018941] text-white shadow-sm font-medium rounded-2xl transition-all px-5 py-2.5 text-base">
               <p>기본</p>
             </div>
