@@ -15,12 +15,6 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
-      <div className="p-5">
-        <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-semibold text-gray-900">
-          {title}
-        </h1>
-      </div>
-
       <div className="flex items-center">
         {showBackButton && (
           <button
@@ -42,6 +36,12 @@ const Header: React.FC<HeaderProps> = ({
             </svg>
           </button>
         )}
+      </div>
+
+      <div className="p-5">
+        <h1 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-semibold text-gray-900">
+          {title}
+        </h1>
       </div>
 
       {rightElement && (
