@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
+import { useFamilyStore } from "../stores/usefamilyStore";
+import { inviteFamily, getInvitations } from "../services/familyApi";
+import { useUserStore } from "../stores/useUserStore";
 
 const FamilyMembersPage: React.FC = () => {
   const navigate = useNavigate();
+  /* TODO: 추후 false로 기본값 변경 후 관리자용인지 확인 필요 */
+  const [isShowWaitList, setIsShowWaitList] = useState<boolean>(true);
 
-  const family = {
-    name: "김가족",
-    email: "family@example.com",
-    profileImage: "/api/placeholder/80/80",
-    subscriptionPlan: "월 구독",
-    subscriptionStatus: "정상 구독 중",
-    nextPaymentDate: "2024년 2월 4일",
-    subscriptionStartDate: "2023년 1월 1일",
-    price: "8,900원",
-  };
+  const familyId = useUserStore((state) => state.familyId);
+  const userProfileImageUrl = useUserStore(
+    (state) => state.userProfileImageUrl
+  );
+  const userEmail = useUserStore((state) => state.userEmail);
+  const userName = useUserStore((state) => state.userName);
+  const setInviteCode = useFamilyStore((state) => state.setInviteCode);
+  const invitedFamilyMembers = useFamilyStore(
+    (state) => state.invitedFamilyMembers
+  );
+  const setInvitedFamilyMembers = useFamilyStore(
+    (state) => state.setInvitedFamilyMembers
+  );
 
   /* 가족 구성원 프로필 편집 */
   const handleEditProfile = () => {
@@ -24,7 +32,18 @@ const FamilyMembersPage: React.FC = () => {
   };
 
   /* 가족 구성원 초대 */
-  const handleInviteFamily = () => {
+  const handleInviteFamily = async () => {
+    try {
+      const response = await inviteFamily(familyId);
+
+      if (response.success && response.data.inviteCode && response.data) {
+        setInviteCode(response.data.inviteCode);
+        console.log("초대코드", response.data.inviteCode);
+      }
+    } catch (error) {
+      console.error("가족 초대 에러:", error);
+    }
+
     navigate("/member/invite");
   };
 
@@ -32,6 +51,22 @@ const FamilyMembersPage: React.FC = () => {
   const handleWaitList = () => {
     navigate("/member/wait-list");
   };
+
+  const handleInvitedFamilyMembers = async () => {
+    try {
+      const response = await getInvitations(familyId);
+      if (response.data && response.data.length > 0) {
+        setInvitedFamilyMembers(response.data);
+        setIsShowWaitList(true);
+      }
+    } catch (error) {
+      console.error("가족 초대 요청 목록: ", error);
+    }
+  };
+
+  useEffect(() => {
+    handleInvitedFamilyMembers();
+  }, []);
 
   return (
     <MainLayout>
@@ -43,15 +78,16 @@ const FamilyMembersPage: React.FC = () => {
         <div className="bg-white rounded-lg p-4 shadow-sm mt-4">
           <div className="flex items-center space-x-4 mb-4">
             <img
-              src={family.profileImage}
-              alt={family.name}
+              src={userProfileImageUrl || "/images/default-profile.png"}
+              alt={userName}
               className="w-16 h-16 rounded-full bg-gray-200"
             />
+
             <div className="flex-1">
               <h2 className="text-xl font-semibold text-gray-900">
-                {family.name}
+                {userName}
               </h2>
-              <p className="text-gray-600">{family.email}</p>
+              <p className="text-gray-600">{userEmail ?? ""}</p>
             </div>
           </div>
         </div>
@@ -59,28 +95,34 @@ const FamilyMembersPage: React.FC = () => {
         {/* 가족 구성원 */}
         <div className="flex items-center justify-between mt-10">
           <p className="font-bold">내 가족</p>
-          <Button
-            type="button"
-            variant="text"
-            size="medium"
-            onClick={handleWaitList}
-            className=""
-          >
-            대기리스트
-          </Button>
+
+          {isShowWaitList && (
+            <Button
+              type="button"
+              variant="text"
+              size="medium"
+              onClick={handleWaitList}
+              className=""
+            >
+              대기리스트
+            </Button>
+          )}
         </div>
 
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-lg p-4 shadow-sm mt-4">
+        {invitedFamilyMembers.map((member) => (
+          <div
+            key={member.invitationId}
+            className="bg-white rounded-lg p-4 shadow-sm mt-4"
+          >
             <div className="flex items-center space-x-4 mb-4">
               <img
-                src={family.profileImage}
-                alt={family.name}
+                src={member.profileImageUrl || "/images/default-profile.png"}
+                alt={member.name}
                 className="w-16 h-16 rounded-full bg-gray-200"
               />
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {family.name}
+                  {member.name}
                 </h2>
               </div>
 
