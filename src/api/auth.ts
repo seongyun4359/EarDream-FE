@@ -2,6 +2,7 @@
 export interface KakaoTokenRequest {
   code: string;
   state: string;
+  redirectUri?: string;
 }
 
 export interface KakaoTokenResponse {
@@ -43,9 +44,9 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const getKakaoLoginUrl = async (): Promise<string> => {
   const baseUrl = import.meta.env.DEV ? "" : API_BASE_URL;
 
-  console.log("카카오 로그인 URL 요청:", `${baseUrl}/auth/kakao`);
+  console.log("카카오 로그인 URL 요청:", `${baseUrl}/api/v1/auth/kakao`);
 
-  const response = await fetch(`${baseUrl}/auth/kakao`, {
+  const response = await fetch(`${baseUrl}/api/v1/auth/kakao`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -86,10 +87,13 @@ export const getJwtToken = async (
   const request: KakaoTokenRequest = {
     code,
     state,
+    redirectUri: `${window.location.origin}/login`,
   };
 
   console.log("JWT 토큰 요청:", request);
-  console.log("JWT 토큰 요청 URL:", `${baseUrl}/auth/kakao/token`);
+  console.log("JWT 토큰 요청 URL:", `${baseUrl}/api/v1/auth/kakao/token`);
+  console.log("현재 origin:", window.location.origin);
+  console.log("redirectUri:", `${window.location.origin}/login`);
   console.log("요청 헤더:", {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -97,7 +101,7 @@ export const getJwtToken = async (
   });
   console.log("요청 본문:", JSON.stringify(request));
 
-  const response = await fetch(`${baseUrl}/auth/kakao/token`, {
+  const response = await fetch(`${baseUrl}/api/v1/auth/kakao/token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -153,7 +157,7 @@ export const refreshJwtToken = async (): Promise<KakaoTokenResponse> => {
     throw new Error("리프레시 토큰이 없습니다.");
   }
 
-  const response = await fetch(`${baseUrl}/auth/kakao/refresh`, {
+  const response = await fetch(`${baseUrl}/api/v1/auth/kakao/refresh`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

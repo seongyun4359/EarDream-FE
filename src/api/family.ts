@@ -30,7 +30,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const createFamily = async (
   request: CreateFamilyRequest
-): Promise<CreateFamilyResponse> => {
+): Promise<ApiResponse<CreateFamilyResponse>> => {
   // 개발 환경에서는 프록시 사용, 프로덕션에서는 환경변수 사용
   const baseUrl = import.meta.env.DEV ? "" : API_BASE_URL;
 

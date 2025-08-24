@@ -60,12 +60,23 @@ const FamilyCreatePage: React.FC = () => {
 
       const response = await createFamily(request);
 
+      // 디버깅: API 응답 로깅
+      console.log("가족 생성 API 응답:", response);
+      console.log("응답 타입:", typeof response);
+      console.log("응답 키들:", Object.keys(response));
+
+      // 백엔드 응답 구조에 맞게 수정 (data 객체 안에 있을 수 있음)
+      const familyData = response.data || response;
+
+      console.log("가족 데이터:", familyData);
+      console.log("가족 ID:", familyData.familyId);
+
       // 성공 시 결제 페이지로 이동
-      navigate("/family/subscribe", {
+      navigate("/payment", {
         state: {
-          familyName: response.familyName,
-          familyId: response.familyId,
-          inviteCode: response.inviteCode,
+          familyName: familyData.familyName,
+          familyId: familyData.familyId,
+          inviteCode: familyData.inviteCode,
         },
       });
     } catch (error) {

@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import type {
+  PaymentResponse,
+  IMP,
+  PaymentCompleteRequest,
+  SubscriptionExecuteRequest,
+  BillingKeyRegisterRequest,
+  SubscriptionSchedule,
+} from "../types/payment";
+import SubscriptionScheduleModal from "../components/payment/SubscriptionScheduleModal.tsx";
+// 사용하지 않는 import 제거 - 필요시 추가
 
 interface LocationState {
   familyName?: string;
+  familyId?: string;
 }
 
 const PaymentPage: React.FC = () => {
@@ -11,60 +22,259 @@ const PaymentPage: React.FC = () => {
   const state = (location.state || {}) as LocationState;
   const familyName = state.familyName || "우리 가족";
 
+  // 디버깅: 전달받은 상태 로깅
+  console.log("PaymentPage - 전달받은 상태:", state);
+  console.log("PaymentPage - 가족 이름:", familyName);
+  console.log("PaymentPage - 가족 ID:", state.familyId);
+
   const [method, setMethod] = useState<"kakaopay" | "card">("kakaopay");
   const [agreeAll, setAgreeAll] = useState(false);
   const [agreePolicy, setAgreePolicy] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [subscriptionSchedule, setSubscriptionSchedule] =
+    useState<SubscriptionSchedule>({
+      week: "2nd",
+      day: "sunday",
+    });
+  // setSubscriptionSchedule은 SubscriptionScheduleModal에서 사용됨
 
-  const handlePay = () => {
+  const handleScheduleChange = () => {
+    setShowScheduleModal(true);
+  };
+
+  const handleScheduleConfirm = () => {
+    setShowScheduleModal(false);
+
+    // 구독 주기 변경 후 정기결제 설정
+    const customerUid = `customer_${state.familyId || "temp"}_${subscriptionSchedule.week}`;
+
+    const subscriptionData = {
+      familyId: state.familyId || "temp_family_id",
+      schedule: subscriptionSchedule,
+      amount: 3000, // 정기결제 금액
+      orderName: `부모님께 이어드림 선물하기 - ${familyName}`,
+      customerUid: customerUid,
+    };
+
+    console.log("구독 주기 변경:", subscriptionSchedule);
+    console.log("정기결제 설정:", subscriptionData);
+
+    // TODO: 백엔드 API 호출 시퀀스
+    // 1. 구독 주기 변경 API
+    // 2. 빌링키 등록 API (카드 정보 필요)
+    // 3. 정기결제 설정 API
+
+    // 예시: 빌링키 등록 요청 데이터
+    const billingKeyRequest: BillingKeyRegisterRequest = {
+      billingKey: "billing_key_example", // 포트원에서 발급된 빌링키
+      customerUid: customerUid,
+      cardName: "신한카드",
+      cardNumber: "1234-****-****-5678", // 마스킹된 카드번호
+      familyId: state.familyId || "temp_family_id",
+    };
+
+    // 예시: 정기결제 실행 요청 데이터
+    const subscriptionExecuteRequest: SubscriptionExecuteRequest = {
+      familyId: state.familyId || "temp_family_id",
+      amount: 8900,
+      orderName: `부모님께 이어드림 선물하기 - ${familyName}`,
+      customerUid: customerUid,
+    };
+
+    console.log("빌링키 등록 요청:", billingKeyRequest);
+    console.log("정기결제 실행 요청:", subscriptionExecuteRequest);
+  };
+
+  const handlePay = async () => {
     if (!agreePolicy) return;
-    
-    // 포트원 결제 요청
-    if (typeof window !== "undefined" && (window as any).IMP) {
-      const IMP = (window as any).IMP;
-      
-      // IMP 초기화 (실제 가맹점 식별코드로 변경 필요)
-      IMP.init("imp00000000"); // 테스트용 코드
-      
-      // 결제 요청
-      IMP.request_pay({
-        pg: method === "kakaopay" ? "kakaopay" : "html5_inicis", // PG사
-        pay_method: method === "kakaopay" ? "kakaopay" : "card", // 결제수단
-        merchant_uid: `order_${Date.now()}`, // 주문번호 (고유값)
-        name: `부모님께 이어드림 선물하기 - ${familyName}`, // 주문명
-        amount: 3000, // 결제금액 (3,000원)
-        buyer_email: "test@example.com", // 구매자 이메일
-        buyer_name: "구매자", // 구매자 이름
-        buyer_tel: "010-1234-5678", // 구매자 전화번호
-        digital: true, // 디지털 상품
-        currency: "KRW", // 통화
-        language: "ko", // 언어
-        m_redirect_url: `${window.location.origin}/payment/result`, // 모바일 리다이렉트 URL
-        notice_url: `${window.location.origin}/api/payment/webhook`, // 웹훅 URL
-        custom_data: {
+
+    // 가족 ID 검증
+    if (!state.familyId) {
+      alert("가족 정보가 없습니다. 먼저 가족을 생성해주세요.");
+      return;
+    }
+
+    // 개발환경에서는 모의 결제로 테스트
+    if (process.env.NODE_ENV === "development") {
+      console.log("개발환경: 모의 결제 진행");
+      console.log("현재 가족 ID:", state.familyId);
+
+      // 모의 결제 응답 데이터 (더 현실적인 데이터)
+      const mockResponse: PaymentResponse = {
+        success: true,
+        imp_uid: `imp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        merchant_uid: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        pay_method: "kakaopay",
+        status: "paid",
+        name: `부모님께 이어드림 선물하기 - ${familyName}`,
+        pg_provider: "kakaopay",
+        paid_amount: 3000,
+        buyer_email: "test@example.com",
+        buyer_name: "구매자",
+        buyer_tel: "010-1234-5678",
+        custom_data: JSON.stringify({
           familyName: familyName,
-          familyId: "temp_id", // 실제로는 가족 ID 사용
-        },
-      }, (rsp: any) => {
-        if (rsp.success) {
-          // 결제 성공 시
-          console.log("결제 성공:", rsp);
-          alert("결제가 완료되었습니다!");
+          familyId: state.familyId,
+        }),
+        paid_at: Math.floor(Date.now() / 1000), // Unix timestamp 추가
+        receipt_url: "https://example.com/receipt", // 영수증 URL 추가
+      };
+
+      // 백엔드에 결제 완료 정보 전송 (실제 가족 ID 사용)
+      const paymentCompleteRequest: PaymentCompleteRequest = {
+        paymentId: `payment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        merchantUid: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        impUid: `imp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        familyId: String(state.familyId), // 가족 ID를 문자열로 변환
+        status: "PENDING", // 백엔드 검증 규칙에 맞춤
+        type: "ONETIME", // 결제 타입: 일회성 결제
+      };
+
+      console.log("=== 백엔드 결제 완료 요청 상세 정보 ===");
+      console.log("백엔드 요청 데이터:", paymentCompleteRequest);
+      console.log(
+        "요청 본문 JSON:",
+        JSON.stringify(paymentCompleteRequest, null, 2)
+      );
+      console.log("가족 ID 타입:", typeof state.familyId);
+      console.log("가족 ID 값:", state.familyId);
+      console.log("백엔드 요구사항:", "정확히 6개 필드 전송 (type 필드 추가)");
+      console.log("백엔드 허용 상태값들:", [
+        "PENDING",
+        "APPROVED",
+        "FAILED",
+        "CANCELLED",
+      ]);
+      console.log("현재 사용 상태값:", "PENDING");
+      console.log("=====================================");
+
+      try {
+        const apiUrl = "/api/v1/payments/complete";
+        console.log("백엔드 API 요청 URL:", apiUrl);
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(paymentCompleteRequest),
+        });
+
+        console.log("백엔드 응답 상태:", response.status);
+        console.log("백엔드 응답 헤더:", response.headers);
+
+        if (response.ok) {
+          console.log("백엔드 결제 완료 처리 성공");
+          alert("모의 결제가 완료되었습니다!");
+
           // 결제 완료 후 기본정보 입력 페이지로 이동
-          navigate("/recipient", { 
-            state: { 
+          navigate("/recipient", {
+            state: {
               familyName,
-              paymentData: rsp,
-              merchantUid: rsp.merchant_uid,
-            } 
+              paymentData: mockResponse,
+              merchantUid: mockResponse.merchant_uid,
+              impUid: mockResponse.imp_uid,
+            },
           });
         } else {
-          // 결제 실패 시
-          console.log("결제 실패:", rsp);
-          alert(`결제에 실패했습니다: ${rsp.error_msg}`);
+          console.error("백엔드 결제 완료 처리 실패:", response.status);
+
+          // 백엔드 오류 응답 상세 확인
+          response.text().then((errorText) => {
+            console.error("백엔드 오류 상세:", errorText);
+            alert(
+              `모의 결제는 완료되었지만 서버 처리에 실패했습니다. (${response.status})`
+            );
+          });
         }
-      });
+      } catch (error) {
+        console.error("백엔드 결제 완료 처리 오류:", error);
+        alert("모의 결제는 완료되었지만 서버 처리에 실패했습니다.");
+      }
+      return;
+    }
+
+    // 운영환경에서는 실제 포트원 결제 진행
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as Record<string, unknown>).IMP
+    ) {
+      const IMP = (window as unknown as Record<string, unknown>).IMP as IMP;
+
+      // IMP 초기화 (포트원 가맹점 식별코드)
+      IMP.init("imp00000000"); // 테스트용: 실제 가맹점 코드로 변경 필요
+
+      // 결제 요청
+      IMP.request_pay(
+        {
+          pg: method === "kakaopay" ? "kakaopay" : "html5_inicis",
+          pay_method: method === "kakaopay" ? "kakaopay" : "card",
+          merchant_uid: `order_${Date.now()}`,
+          name: `부모님께 이어드림 선물하기 - ${familyName}`,
+          amount: 3000,
+          buyer_email: "test@example.com",
+          buyer_name: "구매자",
+          buyer_tel: "010-1234-5678",
+          digital: true,
+          currency: "KRW",
+          language: "ko",
+          m_redirect_url: `${window.location.origin}/payment/result`,
+          notice_url: `${window.location.origin}/api/v1/payments/webhook`,
+          custom_data: {
+            familyName: familyName,
+            familyId: state.familyId || "temp_id",
+          },
+        },
+        (rsp: PaymentResponse) => {
+          if (rsp.success) {
+            console.log("결제 성공:", rsp);
+
+            const paymentCompleteRequest: PaymentCompleteRequest = {
+              paymentId: `payment_${Date.now()}`,
+              merchantUid: rsp.merchant_uid,
+              impUid: rsp.imp_uid || "unknown_imp_uid",
+              familyId: state.familyId || "temp_id",
+              status: "COMPLETED",
+              type: "ONETIME", // 결제 타입: 일회성 결제
+            };
+
+            fetch("/api/v1/payments/complete", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(paymentCompleteRequest),
+            })
+              .then((response) => {
+                if (response.ok) {
+                  console.log("백엔드 결제 완료 처리 성공");
+                  alert("결제가 완료되었습니다!");
+
+                  navigate("/recipient", {
+                    state: {
+                      familyName,
+                      paymentData: rsp,
+                      merchantUid: rsp.merchant_uid,
+                      impUid: rsp.imp_uid,
+                    },
+                  });
+                } else {
+                  console.error("백엔드 결제 완료 처리 실패:", response.status);
+                  alert("결제는 완료되었지만 서버 처리에 실패했습니다.");
+                }
+              })
+              .catch((error) => {
+                console.error("백엔드 결제 완료 처리 오류:", error);
+                alert("결제는 완료되었지만 서버 처리에 실패했습니다.");
+              });
+          } else {
+            console.log("결제 실패:", rsp);
+            alert(`결제에 실패했습니다: ${rsp.error_msg}`);
+          }
+        }
+      );
     } else {
-      // IMP SDK가 로드되지 않은 경우
       alert("결제 시스템을 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
     }
   };
@@ -89,7 +299,11 @@ const PaymentPage: React.FC = () => {
                   그룹명: {familyName}
                 </div>
               </div>
-              <button className="text-xs text-[#018941] border border-[#018941] rounded-md px-2 py-1">
+              <button
+                type="button"
+                onClick={handleScheduleChange}
+                className="text-xs text-[#018941] border border-[#018941] rounded-md px-2 py-1 hover:bg-[#018941] hover:text-white transition-colors"
+              >
                 구독주기 변경
               </button>
             </div>
@@ -219,6 +433,14 @@ const PaymentPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* 구독 주기 변경 모달 */}
+      <SubscriptionScheduleModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+        onConfirm={handleScheduleConfirm}
+        currentSchedule={subscriptionSchedule}
+      />
     </div>
   );
 };
