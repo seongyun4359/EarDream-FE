@@ -31,6 +31,11 @@ import SubscribePage from "./pages/SubscribePage";
 import AutoPaymentPage from "./pages/AutoPaymentPage";
 import NewsDetailPage from "./pages/NewsDetailPage";
 import PaymentManagePage from "./pages/PaymentManagePage";
+import AlbumCreatePage from "./pages/AlbumCreatePage";
+import AlbumEditPage from "./pages/AlbumEditPage";
+import AlbumInfoPage from "./pages/AlbumInfoPage";
+import AlbumPhotoPickerPage from "./pages/AlbumPhotoPickerPage";
+import EditNewsPage from "./pages/EditNewsPage";
 
 function App() {
   useEffect(() => {
@@ -46,7 +51,7 @@ function App() {
           <Route path="/" element={<SplashPage />} />
           <Route path="/splash" element={<SplashPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
+
           <Route path="/write-news" element={<WriteNewsPage />} />
           <Route path="/news-box" element={<NewsBoxPage />} />
           <Route path="/news-preview/:id" element={<NewsPreviewPage />} />
@@ -66,11 +71,20 @@ function App() {
           <Route path="/getting-started" element={<GettingStartedPage />} />
           <Route path="/mypage/subscribe" element={<SubscribePage />} />
           <Route path="/mypage/auto-payment" element={<AutoPaymentPage />} />
-          <Route path="/home/news/detail" element={<NewsDetailPage />} />
           <Route
-            path="/mypage/auto-payment/manage"
+            path="/home/news/detail/:postId"
+            element={<NewsDetailPage />}
+          />
+          <Route path="/home/news/edit/:postId" element={<EditNewsPage />} />
+          <Route
+            path="/mypage/auto-payment/manage/:id"
             element={<PaymentManagePage />}
           />
+          <Route path="/home/album/create" element={<AlbumCreatePage />} />
+          <Route path="/home/album/edit" element={<AlbumEditPage />} />
+          <Route path="/home/album/info" element={<AlbumInfoPage />} />
+          <Route path="/home/album/pick" element={<AlbumPhotoPickerPage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route
             path="/home"
             element={
