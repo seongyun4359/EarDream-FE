@@ -1,32 +1,47 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
-import { writePost } from "../services/postsApi";
+import { patchPosts } from "../services/postsApi";
 import { useUserStore } from "../stores/useUserStore";
+import type { Post } from "../types/feed";
 
 interface ImageFile {
   id: string;
-  file: File;
+  file?: File;
   preview: string;
-  description: string;
+  isFromServer?: boolean;
 }
 
-const WriteNewsPage: React.FC = () => {
+const EditNewsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [title, setTitle] = useState("");
+  const location = useLocation();
+  const post = location.state?.post as Post;
+
+  const [title, setTitle] = useState(post?.title || "");
+  const [description, setDescription] = useState(post?.content || "");
+
   const [mainImage, setMainImage] = useState<File | null>(null);
   const [mainImagePreview, setMainImagePreview] = useState<string>("");
-  const [additionalImages, setAdditionalImages] = useState<ImageFile[]>([]);
-  const [description, setDescription] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const familyId = useUserStore((state) => state.familyId);
-  const userId = useUserStore((state) => state.userId);
+  const [additionalImages, setAdditionalImages] = useState<ImageFile[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const MAX_IMAGES = 4;
   const MIN_DESCRIPTION = 0;
   const MAX_DESCRIPTION = 100;
+
+  useEffect(() => {
+    if (post.imageUrls && post.imageUrls.length > 0) {
+      setMainImagePreview(post.imageUrls[0]);
+      const additional = post.imageUrls.slice(1).map((url, idx) => ({
+        id: `server-${idx}`,
+        preview: url,
+        isFromServer: true,
+      }));
+      setAdditionalImages(additional);
+    }
+  }, [post]);
 
   const handleAdditionalImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -37,7 +52,7 @@ const WriteNewsPage: React.FC = () => {
         const reader = new FileReader();
         reader.onload = () => {
           // 첫 번째 사진이면 메인 사진으로 설정
-          if (!mainImage) {
+          if (!mainImagePreview) {
             setMainImage(file);
             setMainImagePreview(reader.result as string);
           } else {
@@ -48,7 +63,6 @@ const WriteNewsPage: React.FC = () => {
                 id: Date.now().toString(),
                 file,
                 preview: reader.result as string,
-                description: "",
               };
               setAdditionalImages((prev) => [...prev, newImage]);
             }
@@ -65,30 +79,49 @@ const WriteNewsPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !mainImage) return;
+    if (!title.trim()) return;
 
     setIsSubmitting(true);
 
-    const imagesToUpload: File[] = [
-      mainImage,
-      ...additionalImages.map((img) => img.file),
-    ];
+    try {
+      const uploadedFiles: File[] = [];
+      if (mainImage) uploadedFiles.push(mainImage);
+      additionalImages.forEach((img) => {
+        if (img.file) uploadedFiles.push(img.file);
+      });
 
-    writePost(familyId, userId, title, description, imagesToUpload);
+      const serverFiles: File[] = await Promise.all(
+        [
+          ...(mainImagePreview && !mainImage
+            ? [{ preview: mainImagePreview }]
+            : []),
+          ...additionalImages.filter((img) => img.isFromServer),
+        ].map(async (img) => {
+          const res = await fetch(img.preview);
+          const blob = await res.blob();
+          const fileName = img.preview.split("/").pop() || "image.jpg";
+          return new File([blob], fileName, { type: blob.type });
+        })
+      );
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+      const allFiles = [...uploadedFiles, ...serverFiles];
+
+      await patchPosts(post.id, title, description, allFiles);
       navigate("/home");
-    }, 1000);
-  };
-
-  const handleBack = () => {
-    navigate("/home");
+    } catch (err) {
+      console.error("소식 수정 실패:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <MainLayout>
-      <Header title="글쓰기" showBackButton onBackClick={handleBack} />
+      <Header
+        title="소식 수정"
+        showBackButton
+        onBackClick={() => navigate("/home")}
+      />
 
       <div className="p-4 space-y-6">
         {/* 제목 입력 필드 */}
@@ -97,7 +130,7 @@ const WriteNewsPage: React.FC = () => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력해주세요"
+            placeholder="제목을 입력하세요"
             className="w-full px-4 py-3 border border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018941] focus:border-[#018941] transition-colors duration-200 text-lg"
           />
         </div>
@@ -202,7 +235,7 @@ const WriteNewsPage: React.FC = () => {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="이 사진은 어떤 사진 인가요? (최대 100자)"
+                placeholder={post.content}
                 maxLength={MAX_DESCRIPTION}
                 className="w-full px-4 py-3 border border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#018941] focus:border-[#018941] transition-colors duration-200 text-lg resize-none"
                 rows={3}
@@ -249,6 +282,7 @@ const WriteNewsPage: React.FC = () => {
                 </button>
               </div>
             ))}
+
             {additionalImages.length < MAX_IMAGES - 1 && (
               <div className="w-20 h-20 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
                 <input
@@ -281,22 +315,22 @@ const WriteNewsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 공유하기 버튼 */}
+        {/* 저장하기 버튼 */}
         <button
           onClick={handleSubmit}
           disabled={
             isSubmitting ||
             !title.trim() ||
-            !mainImage ||
+            (!mainImage && !mainImagePreview) ||
             description.length < MIN_DESCRIPTION
           }
           className="w-full bg-[#018941] text-white py-4 px-6 rounded-lg font-medium text-lg hover:bg-[#017a3a] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
         >
-          {isSubmitting ? "공유 중..." : "공유하기"}
+          {isSubmitting ? "저장 중..." : "저장하기"}
         </button>
       </div>
     </MainLayout>
   );
 };
 
-export default WriteNewsPage;
+export default EditNewsPage;

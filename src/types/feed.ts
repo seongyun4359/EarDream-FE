@@ -1,11 +1,12 @@
 export interface Post {
-  id: string;
+  id: number;
+  authorId?: number;
   author: string;
   authorImage: string;
   timeAgo: string;
   title: string;
   content: string;
-  imageUrl?: string;
+  imageUrls?: string[];
   likes: number;
   comments: number;
   isNew: boolean;

@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
@@ -8,50 +7,45 @@ import Alert from "../components/common/Alert";
 import WarningIcon from "../assets/icons/WarningIcon";
 import CardIcon from "../assets/icons/CardIcon";
 import PaymentInfo from "../components/other/PaymentInfo";
-
-const payments = [
-  {
-    id: 1,
-    label: "신한카드",
-    cardNumber: "**** - **** - **** - 1234",
-    date: "08/29",
-    isBasic: true,
-    icon: <CardIcon className="w-10 h-10 text-[#018941]" />,
-  },
-  {
-    id: 2,
-    label: "국민카드",
-    cardNumber: "**** - **** - **** - 5678",
-    isBasic: false,
-    icon: <CardIcon className="w-10 h-10 text-[#016b33]" />,
-  },
-  {
-    id: 3,
-    label: "카카오뱅크 카드",
-    cardNumber: "**** - **** - **** - 9012",
-    isBasic: false,
-    icon: <CardIcon className="w-10 h-10 text-[#feca1b]" />,
-  },
-];
+import { usePaymentStore } from "../stores/usePaymentStore";
+import type { Payment } from "../stores/usePaymentStore";
 
 const PaymentManagePage: React.FC = () => {
-  const payment = {
-    card: "**** - **** - **** - 3444",
-    date: "03/27",
-    isBasicPayment: true,
-  };
+  const { id } = useParams<{ id: string }>();
+  const payments = usePaymentStore((state) => state.payments);
+  const setPayments = usePaymentStore((state) => state.setPayments);
 
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [isBasicPayment, setIsBasicPayment] = useState(false);
   const navigate = useNavigate();
   const [isDeleteAlert, setIsDeleteAlert] = useState(false);
-  const [isBasicPayment, setIsBasicPayment] = useState(payment.isBasicPayment);
 
-  /* TODO: 사용자 정보 수정 후 저장하는 함수 수정 필요 */
+  useEffect(() => {
+    const payment = payments.find((p) => p.id === Number(id));
+    if (payment) {
+      setSelectedPayment(payment);
+      setIsBasicPayment(payment.isBasic);
+    }
+  }, [id, payments]);
+
+  if (!selectedPayment) return null;
+
   const handleSave = () => {
+    const updatedPayments = payments.map((p) =>
+      p.id === selectedPayment.id
+        ? { ...p, isBasic: isBasicPayment }
+        : { ...p, isBasic: false }
+    );
+    setPayments(updatedPayments);
     navigate("/home");
   };
 
-  /* TODO: 결제수단 삭제하는 로직 함수 추가 필요*/
-  const handleDeletePayment = () => {};
+  const handleDeletePayment = () => {
+    const updatedPayments = payments.filter((p) => p.id !== selectedPayment.id);
+    setPayments(updatedPayments);
+    setIsDeleteAlert(false);
+    navigate("/home");
+  };
 
   return (
     <MainLayout>
@@ -59,13 +53,17 @@ const PaymentManagePage: React.FC = () => {
 
       <PaymentInfo
         type="card"
-        icon={<CardIcon className="w-20 text-[#018941] mt-4" />}
-        label={payments[0].cardNumber}
-        cardNumber={payments[0].cardNumber}
-        date={payments[0].date}
+        icon={
+          <CardIcon
+            className="w-20 mt-4"
+            style={{ color: selectedPayment.iconColor }}
+          />
+        }
+        label={selectedPayment.label}
+        cardNumber={selectedPayment.cardNumber}
+        date={selectedPayment.date}
       />
 
-      {/* 기본 결제 수단 수정 */}
       <div className="p-4 flex flex-col space-y-10">
         <div className="flex items-center space-x-2">
           <input
@@ -77,13 +75,12 @@ const PaymentManagePage: React.FC = () => {
           <p>기본 결제 수단으로 지정할래요</p>
         </div>
 
-        {/* 버튼 영역 */}
         <div className="flex gap-4 mt-10">
           <Button
             type="button"
             variant="primary"
             size="medium"
-            onClick={() => handleSave}
+            onClick={handleSave}
             className="flex-1"
           >
             저장하기

@@ -1,19 +1,25 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
+import { useFamilyStore } from "../stores/usefamilyStore";
 
 const FamilyInvitePage: React.FC = () => {
-  const navigate = useNavigate();
+  const inviteCode = useFamilyStore((state) => state.inviteCode);
 
-  /* 가족 구성원 프로필 편집 */
-  const handleEditProfile = () => {
-    navigate("/member/edit");
+  /* TODO: 카카오 초대하기 구현 필요 */
+  const handleKaKao = () => {};
+
+  /* 초대코드 복사하기 */
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteCode);
+      alert("초대코드가 복사되었습니다!");
+    } catch (err) {
+      console.error("복사 실패:", err);
+      alert("복사에 실패했습니다. 다시 시도해주세요.");
+    }
   };
-
-  /* 가족 구성원 초대 */
-  const handleInviteFamily = () => {};
 
   return (
     <MainLayout>
@@ -25,14 +31,14 @@ const FamilyInvitePage: React.FC = () => {
 
         <div className="bg-white rounded-lg p-4 shadow-sm mt-4 h-30 flex flex-col justify-center items-center">
           <p className="text-xl font-bold mb-4">가족 초대코드</p>
-          <p className="text-2xl font-bold">A B C D E F</p>
+          <p className="text-2xl font-bold">{inviteCode}</p>
         </div>
 
         <div className="flex gap-4 mt-4">
           <Button
             variant="primary"
             size="medium"
-            onClick={handleEditProfile}
+            onClick={handleCopyCode}
             className="flex-1"
           >
             초대코드 복사하기
@@ -41,7 +47,7 @@ const FamilyInvitePage: React.FC = () => {
           <Button
             variant="primary"
             size="medium"
-            onClick={handleEditProfile}
+            onClick={handleKaKao}
             className="flex-1"
           >
             카톡으로 초대하기

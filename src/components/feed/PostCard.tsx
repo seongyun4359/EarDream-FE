@@ -12,12 +12,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
   const navigate = useNavigate();
   const handleCommentSend = (message: string) => {
     if (onCommentSend) {
-      onCommentSend(post.id, message);
+      onCommentSend(post.id.toString(), message);
     }
   };
 
   const handleCardClick = () => {
-    navigate("/home/news/detail");
+    navigate(`/home/news/detail/${post.id}`);
   };
 
   return (
@@ -28,11 +28,13 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
       {/* 게시물 헤더 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
-          <img
-            src={post.authorImage}
-            alt={post.author}
-            className="w-10 h-10 rounded-full bg-gray-200"
-          />
+          {post.authorImage && post.authorImage.trim() !== "" && (
+            <img
+              src={post.authorImage}
+              alt={post.author}
+              className="w-10 h-10 rounded-full bg-gray-200"
+            />
+          )}
           <div className="flex items-center">
             <p className="font-medium text-gray-900">{post.author}</p>
             <p className="text-sm text-gray-500 ml-3">{post.timeAgo}</p>
@@ -49,18 +51,26 @@ const PostCard: React.FC<PostCardProps> = ({ post, onCommentSend }) => {
       <h3 className="font-medium text-gray-900 mb-3">{post.title}</h3>
 
       {/* 게시물 이미지 */}
-      <div className="bg-gray-200 rounded-lg h-48 mb-3 flex items-center justify-center">
-        <svg
-          className="w-12 h-12 text-gray-400"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-        </svg>
+      <div className="bg-gray-200 rounded-lg w-full h-full mb-3 flex items-center justify-center overflow-hidden">
+        {post.imageUrls ? (
+          <img
+            src={post.imageUrls[0]}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <svg
+            className="w-12 h-12 text-gray-400"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+          </svg>
+        )}
       </div>
 
       {/* 게시물 내용 */}
-      <p className="text-gray-700 text-sm mb-4 whitespace-pre-line">
+      <p className="text-gray-700 text-me mb-4 whitespace-pre-line">
         {post.content}
       </p>
 
