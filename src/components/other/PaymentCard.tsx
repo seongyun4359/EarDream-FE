@@ -1,31 +1,23 @@
 import React from "react";
 import Button from "../common/Button";
 import { useNavigate } from "react-router-dom";
-import { usePaymentStore } from "../../stores/usePaymentStore";
-
+import type { Payment } from "../../stores/usePaymentStore";
+// PaymentCard.tsx
 interface PaymentCardProps {
-  id: number;
+  payment: Payment;
   icon: React.ReactNode;
-  label: string;
-  cardNumber?: string;
   onClick?: () => void;
 }
 
 const PaymentCard: React.FC<PaymentCardProps> = ({
-  id,
+  payment,
   icon,
-  label,
-  cardNumber,
   onClick,
 }) => {
   const navigate = useNavigate();
-  const payments = usePaymentStore((state) => state.payments);
-
-  const payment = payments.find((p) => p.id === id);
-  if (!payment) return null;
 
   const handleEditPayment = () => {
-    navigate(`/mypage/auto-payment/manage/${id}`);
+    navigate(`/mypage/auto-payment/manage/${payment.id}`);
   };
 
   return (
@@ -37,17 +29,20 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
         {icon}
 
         <div className="flex-1">
-          <h2 className="text-sm font-semibold text-gray-600">{cardNumber}</h2>
-          <h2 className="text-sm font-semibold text-gray-400">{label}</h2>
+          <h2 className="text-sm font-semibold text-gray-600">
+            {payment.cardNumber}
+          </h2>
+          <h2 className="text-sm font-semibold text-gray-400">
+            {payment.label}
+          </h2>
         </div>
 
         <div className="flex gap-4">
           {payment.isBasic && (
             <div className="bg-[#018941] text-white shadow-sm font-medium rounded-2xl transition-all px-5 py-2.5 text-base">
-              <p>기본</p>
+              기본
             </div>
           )}
-
           <Button variant="outline" size="small" onClick={handleEditPayment}>
             편집
           </Button>

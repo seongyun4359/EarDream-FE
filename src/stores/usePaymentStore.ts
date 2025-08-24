@@ -11,12 +11,10 @@ export interface Payment {
 
 interface PaymentState {
   payments: Payment[];
-  inviteCode: string;
   setPayments: (payments: Payment[]) => void;
 }
 
 export const usePaymentStore = create<PaymentState>((set) => ({
-  inviteCode: "",
   payments: [
     {
       id: 1,

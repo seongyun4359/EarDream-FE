@@ -84,25 +84,27 @@ const EditNewsPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const filesToUpload: File[] = [];
-
-      if (mainImage) filesToUpload.push(mainImage);
+      const uploadedFiles: File[] = [];
+      if (mainImage) uploadedFiles.push(mainImage);
       additionalImages.forEach((img) => {
-        if (img.file) filesToUpload.push(img.file);
+        if (img.file) uploadedFiles.push(img.file);
       });
 
-      const existingFiles = await Promise.all(
-        additionalImages
-          .filter((img) => img.isFromServer)
-          .map(async (img) => {
-            const res = await fetch(img.preview);
-            const blob = await res.blob();
-            const fileName = img.preview.split("/").pop() || "image.jpg";
-            return new File([blob], fileName, { type: blob.type });
-          })
+      const serverFiles: File[] = await Promise.all(
+        [
+          ...(mainImagePreview && !mainImage
+            ? [{ preview: mainImagePreview }]
+            : []),
+          ...additionalImages.filter((img) => img.isFromServer),
+        ].map(async (img) => {
+          const res = await fetch(img.preview);
+          const blob = await res.blob();
+          const fileName = img.preview.split("/").pop() || "image.jpg";
+          return new File([blob], fileName, { type: blob.type });
+        })
       );
 
-      const allFiles = [...filesToUpload, ...existingFiles];
+      const allFiles = [...uploadedFiles, ...serverFiles];
 
       await patchPosts(post.id, title, description, allFiles);
       navigate("/home");

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
@@ -8,23 +8,15 @@ import WarningIcon from "../assets/icons/WarningIcon";
 import CardIcon from "../assets/icons/CardIcon";
 import PaymentCard from "../components/other/PaymentCard";
 import { usePaymentStore } from "../stores/usePaymentStore";
-import type { Payment } from "../stores/usePaymentStore";
 
 const AutoPaymentPage: React.FC = () => {
   const [isShowAlert, setIsShowAlert] = useState(false);
   const payments = usePaymentStore((state) => state.payments);
-  const [selectedPayment, setSelectedPayment] = useState<Payment>(payments[0]);
 
   const handleShowAlert = () => setIsShowAlert((prev) => !prev);
 
   /* TODO: 자동 결제 해지 함수 */
   const handleCancelAutoPayment = () => {};
-
-  /* 카드 선택 시 selectedPayment 변경 */
-  const handleSelectPayment = (id: number) => {
-    const payment = payments.find((p) => p.id === id);
-    if (payment) setSelectedPayment(payment);
-  };
 
   // TODO: 실제 사용자 데이터로 교체
   const user = {
@@ -34,6 +26,8 @@ const AutoPaymentPage: React.FC = () => {
     nextPaymentDate: "2024년 2월 4일",
     subscriptionStartDate: "2023년 1월 1일",
   };
+
+  useEffect(() => {}, []);
 
   return (
     <MainLayout>
@@ -81,16 +75,13 @@ const AutoPaymentPage: React.FC = () => {
         {payments.map((payment) => (
           <PaymentCard
             key={payment.id}
-            id={payment.id}
+            payment={payment}
             icon={
               <CardIcon
                 className="w-10 h-10"
                 style={{ color: payment.iconColor }}
               />
             }
-            label={payment.label}
-            cardNumber={payment.cardNumber}
-            onClick={() => handleSelectPayment(payment.id)}
           />
         ))}
 
