@@ -1,9 +1,9 @@
-import {
+import type {
   PaymentCompleteRequest,
   SubscriptionExecuteRequest,
   BillingKeyRegisterRequest,
   SubscriptionSchedule,
-} from "../types/payment";
+} from "../types/payment.ts";
 
 // 결제 완료 요청 데이터 생성
 export const createPaymentCompleteRequest = (

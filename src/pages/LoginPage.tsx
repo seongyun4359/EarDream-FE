@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { loginWithKakao, initKakao } from "../services/kakaoAuth";
+import { initKakao } from "../services/kakaoAuth";
 import { getJwtToken } from "../api/auth";
 
 const LoginPage: React.FC = () => {
@@ -48,18 +48,12 @@ const LoginPage: React.FC = () => {
 
   const handleKakaoLogin = async () => {
     try {
-      const user = await loginWithKakao();
-      if (user) {
-        console.log("로그인 성공:", user);
-        // 로그인 성공 시 튜토리얼 페이지로 이동
-        navigate("/tutorial");
-      } else {
-        console.error("로그인 실패");
-        alert("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
-      }
+      console.log("카카오 로그인 버튼 클릭 - 인증 없이 바로 이동");
+      // 인증 과정 없이 바로 튜토리얼 페이지로 이동
+      navigate("/tutorial");
     } catch (error) {
-      console.error("로그인 오류:", error);
-      alert("로그인 중 오류가 발생했습니다.");
+      console.error("페이지 이동 오류:", error);
+      alert("페이지 이동 중 오류가 발생했습니다.");
     }
   };
 
