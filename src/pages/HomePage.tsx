@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("소식함");
   const [activeFilter, setActiveFilter] = useState("전체");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen] = useState(false);
   const [isDeleteAlert, setIsDeleteAlert] = useState(false);
 
   const familyId = useUserStore((state) => state.familyId);

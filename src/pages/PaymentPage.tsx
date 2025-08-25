@@ -32,11 +32,10 @@ const PaymentPage: React.FC = () => {
   const [agreePolicy, setAgreePolicy] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [subscriptionSchedule, setSubscriptionSchedule] =
-    useState<SubscriptionSchedule>({
-      week: "2nd",
-      day: "sunday",
-    });
+  const [subscriptionSchedule] = useState<SubscriptionSchedule>({
+    week: "2nd",
+    day: "sunday",
+  });
   // setSubscriptionSchedule은 SubscriptionScheduleModal에서 사용됨
 
   const handleScheduleChange = () => {

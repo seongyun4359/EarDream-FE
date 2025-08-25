@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import Header from "../components/common/Header";
-import type { Post } from "../types/feed";
+// import type { Post } from "../types/feed";
 import PostDetail from "../components/feed/PostDetail";
 import { useUserStore } from "../stores/useUserStore";
 import { usePostStore } from "../stores/usePostStore";

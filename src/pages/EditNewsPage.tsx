@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import { patchPosts } from "../services/postsApi";
-import { useUserStore } from "../stores/useUserStore";
+// import { useUserStore } from "../stores/useUserStore";
 import type { Post } from "../types/feed";
 
 interface ImageFile {

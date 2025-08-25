@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
-import { useFamilyStore } from "../stores/usefamilyStore";
+import { useFamilyStore } from "../stores/useFamilyStore";
 import { inviteFamily, getInvitations } from "../services/familyApi";
 import { useUserStore } from "../stores/useUserStore";
 

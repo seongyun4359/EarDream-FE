@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../components/common/Header";
 import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
-import { useFamilyStore } from "../stores/usefamilyStore";
+import { useFamilyStore } from "../stores/useFamilyStore";
 
 const FamilyInvitePage: React.FC = () => {
   const inviteCode = useFamilyStore((state) => state.inviteCode);

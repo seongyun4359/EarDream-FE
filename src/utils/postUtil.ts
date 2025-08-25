@@ -5,7 +5,7 @@ const BASIC_URL = import.meta.env.VITE_IMAGE_BASE_URL;
 
 export const mapPostDataToPost = (data: PostData[]): Post[] => {
   return data.map((p) => ({
-    id: p.id.toString(),
+    id: parseInt(p.id.toString()),
     author: "김가족",
     authorId: 5,
     authorImage: "",

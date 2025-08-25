@@ -4,7 +4,7 @@ import MainLayout from "../components/layout/MainLayout";
 import Button from "../components/common/Button";
 import RelationShipSelect from "../components/other/RelationShipSelect";
 import { useUserStore } from "../stores/useUserStore";
-import { useFamilyStore } from "../stores/usefamilyStore";
+import { useFamilyStore } from "../stores/useFamilyStore";
 import { approveInvitation, rejectInvitation } from "../services/familyApi";
 
 const WaitListPage: React.FC = () => {

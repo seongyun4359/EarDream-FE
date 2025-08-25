@@ -10,7 +10,8 @@ export const createPaymentCompleteRequest = (
   impUid: string,
   merchantUid: string,
   familyId: string,
-  status: string = "PENDING"
+  status: string = "PENDING",
+  type: "ONETIME" | "SUBSCRIPTION" = "ONETIME"
 ): PaymentCompleteRequest => {
   return {
     paymentId: `payment_${Date.now()}`,
@@ -18,6 +19,7 @@ export const createPaymentCompleteRequest = (
     impUid,
     familyId,
     status,
+    type,
   };
 };
 
